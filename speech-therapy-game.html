@@ -1,0 +1,1129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sound Safari 🚦</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@700;900&display=swap');
+*{margin:0;padding:0;box-sizing:border-box;}
+body{
+  background:#1a2744;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  min-height:100vh;overflow:hidden;
+  font-family:'Fredoka One',cursive;
+  touch-action:manipulation;
+}
+
+/* ── TITLE ── */
+#title-screen{
+  position:fixed;inset:0;z-index:100;
+  background:linear-gradient(180deg,#29B6F6 0%,#81D4FA 44%,#66BB6A 44%,#388E3C 100%);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;
+}
+#title-screen.hidden{display:none;}
+.t-title{font-size:clamp(36px,7vw,68px);color:#fff;text-shadow:3px 3px 0 #E65100,5px 5px 12px rgba(0,0,0,.3);animation:bob 1.8s ease-in-out infinite;margin-bottom:6px;}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.t-sub{font-family:'Nunito',sans-serif;font-weight:900;font-size:clamp(13px,2.2vw,20px);color:#FFF9C4;text-shadow:1px 1px 4px rgba(0,0,0,.4);margin-bottom:26px;}
+.v-row{display:flex;gap:14px;margin-bottom:22px;flex-wrap:wrap;justify-content:center;}
+.v-card{background:#fff;border-radius:16px;padding:14px 20px;cursor:pointer;border:4px solid transparent;box-shadow:0 6px 0 rgba(0,0,0,.2);transition:transform .15s;text-align:center;min-width:100px;}
+.v-card:hover{transform:translateY(-5px);}
+.v-card.sel{border-color:#FF8C00;background:#FFF3E0;}
+.v-card .ico{font-size:40px;line-height:1;}
+.v-card .lbl{font-size:14px;color:#555;margin-top:4px;}
+.btn-go{font-family:'Fredoka One',cursive;font-size:24px;background:linear-gradient(135deg,#FF8C00,#F4511E);color:#fff;border:none;border-radius:50px;padding:13px 46px;cursor:pointer;box-shadow:0 6px 0 #BF360C;}
+.btn-go:active{transform:translateY(4px);box-shadow:0 2px 0 #BF360C;}
+
+/* ── GAME LAYOUT ── */
+#game-wrap{width:100%;max-width:900px;display:flex;flex-direction:column;align-items:center;padding:0 6px;}
+#game-wrap.hidden{display:none;}
+#hud{width:100%;display:flex;justify-content:space-between;align-items:center;padding:5px 2px 3px;color:#fff;font-size:clamp(13px,2.2vw,18px);text-shadow:1px 1px 4px rgba(0,0,0,.6);}
+.hud-pill{background:rgba(255,255,255,.15);border-radius:30px;padding:4px 14px;}
+canvas#gc{width:100%;height:auto;display:block;border-radius:14px;box-shadow:0 8px 32px rgba(0,0,0,.6);cursor:pointer;}
+#ctrl-row{display:flex;gap:16px;margin-top:10px;align-items:center;justify-content:center;}
+.cb{font-size:30px;background:rgba(255,255,255,.92);border:none;border-radius:14px;width:70px;height:70px;cursor:pointer;box-shadow:0 5px 0 rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center;transition:transform .1s,box-shadow .1s;user-select:none;}
+.cb:active{transform:translateY(4px);box-shadow:0 1px 0 rgba(0,0,0,.2);}
+#hint-bar{color:#9ab;font-family:'Nunito',sans-serif;font-size:13px;margin-top:5px;text-align:center;}
+
+/* ── CELEBRATION ── */
+#celeb{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;z-index:200;}
+#celeb.hidden{display:none;}
+.celeb-box{background:#fff;border-radius:28px;padding:32px 52px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.4);animation:popin .38s cubic-bezier(.34,1.56,.64,1);}
+@keyframes popin{from{transform:scale(.3)}to{transform:scale(1)}}
+.c-em{font-size:86px;}
+.c-msg{font-size:30px;color:#E65100;margin:8px 0 2px;}
+.c-name{font-size:44px;color:#2E7D32;font-weight:bold;}
+.c-cat{font-family:'Nunito',sans-serif;font-weight:700;font-size:15px;color:#999;margin-top:4px;}
+.confetti-p{position:fixed;width:11px;height:11px;border-radius:2px;animation:cffall 1.9s ease-in forwards;z-index:201;pointer-events:none;}
+@keyframes cffall{0%{opacity:1;transform:translateY(-10px) rotate(0)}100%{opacity:0;transform:translateY(100vh) rotate(720deg)}}
+
+/* ── END ── */
+#end-screen{position:fixed;inset:0;z-index:300;background:linear-gradient(135deg,#43A047,#1B5E20);display:flex;flex-direction:column;align-items:center;justify-content:center;}
+#end-screen.hidden{display:none;}
+
+/* ── HUD ACTION BUTTONS ── */
+.hud-btn{
+  font-family:'Fredoka One',cursive;font-size:13px;
+  border:none;border-radius:20px;padding:5px 12px;cursor:pointer;
+  box-shadow:0 3px 0 rgba(0,0,0,.25);transition:transform .1s,box-shadow .1s;
+  line-height:1.2;
+}
+.hud-btn:active{transform:translateY(2px);box-shadow:0 1px 0 rgba(0,0,0,.2);}
+#btn-home{background:linear-gradient(135deg,#ef5350,#b71c1c);color:#fff;}
+#btn-change-v{background:linear-gradient(135deg,#42a5f5,#1565c0);color:#fff;}
+
+/* ── QUIT MODAL ── */
+#quit-modal{
+  position:fixed;inset:0;background:rgba(0,0,0,.55);
+  display:flex;align-items:center;justify-content:center;z-index:400;
+}
+#quit-modal.hidden{display:none;}
+.quit-box{
+  background:#fff;border-radius:24px;padding:32px 44px;text-align:center;
+  box-shadow:0 20px 60px rgba(0,0,0,.4);animation:popin .3s cubic-bezier(.34,1.56,.64,1);
+  max-width:340px;width:90%;
+}
+.quit-title{font-size:24px;color:#333;margin-bottom:6px;}
+.quit-sub{font-family:'Nunito',sans-serif;font-size:14px;color:#777;margin-bottom:20px;}
+/* scorecard inside quit modal */
+.sc-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px;}
+.sc-cell{background:#f5f5f5;border-radius:12px;padding:10px 8px;text-align:center;}
+.sc-val{font-size:26px;color:#E65100;}
+.sc-lbl{font-family:'Nunito',sans-serif;font-size:11px;color:#888;margin-top:2px;}
+.quit-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
+.quit-btn{
+  font-family:'Fredoka One',cursive;font-size:17px;
+  border:none;border-radius:50px;padding:10px 28px;cursor:pointer;
+  box-shadow:0 4px 0 rgba(0,0,0,.2);transition:transform .1s;
+}
+.quit-btn:active{transform:translateY(3px);}
+.quit-btn.yes{background:linear-gradient(135deg,#ef5350,#b71c1c);color:#fff;}
+.quit-btn.no{background:linear-gradient(135deg,#66bb6a,#2e7d32);color:#fff;}
+
+/* ── CHANGE VEHICLE MODAL ── */
+#chv-modal{
+  position:fixed;inset:0;background:rgba(0,0,0,.55);
+  display:flex;align-items:center;justify-content:center;z-index:400;
+}
+#chv-modal.hidden{display:none;}
+.chv-box{
+  background:#fff;border-radius:24px;padding:28px 36px;text-align:center;
+  box-shadow:0 20px 60px rgba(0,0,0,.4);animation:popin .3s cubic-bezier(.34,1.56,.64,1);
+}
+.chv-title{font-size:22px;color:#333;margin-bottom:16px;}
+.chv-row{display:flex;gap:14px;justify-content:center;margin-bottom:18px;flex-wrap:wrap;}
+
+/* ── TITLE SCORECARD PANEL ── */
+#last-run{
+  background:rgba(255,255,255,.18);border-radius:20px;
+  padding:14px 28px;margin-bottom:18px;
+  backdrop-filter:blur(6px);
+  border:2px solid rgba(255,255,255,.35);
+  min-width:260px;text-align:center;
+}
+#last-run.hidden{display:none;}
+.lr-title{font-size:16px;color:#FFF9C4;margin-bottom:10px;letter-spacing:.5px;}
+.lr-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
+.lr-cell{background:rgba(255,255,255,.22);border-radius:10px;padding:8px 4px;}
+.lr-val{font-size:22px;color:#fff;}
+.lr-lbl{font-family:'Nunito',sans-serif;font-size:10px;color:#FFF9C4;margin-top:2px;}
+</style>
+  <!-- PWA -->
+  <link rel="manifest" href="/manifest.json">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <meta name="theme-color" content="#1565C0">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Sound Safari">
+  <link rel="apple-touch-icon" href="/icons/icon-152x152.png">
+  <meta name="description" content="Interactive toddler speech therapy game">
+</head>
+<body>
+
+<!-- TITLE -->
+<div id="title-screen">
+  <div class="t-title">🚦 Sound Safari!</div>
+  <div class="t-sub">Drive to each signal and tap the picture! 🎉</div>
+
+  <!-- Last run scorecard (hidden until there's a run) -->
+  <div id="last-run" class="hidden">
+    <div class="lr-title">🏅 Last Run</div>
+    <div class="lr-grid">
+      <div class="lr-cell"><div class="lr-val" id="lr-score">0</div><div class="lr-lbl">Score</div></div>
+      <div class="lr-cell"><div class="lr-val" id="lr-signals">0</div><div class="lr-lbl">Signals</div></div>
+      <div class="lr-cell"><div class="lr-val" id="lr-vehicle">🚗</div><div class="lr-lbl">Vehicle</div></div>
+      <div class="lr-cell"><div class="lr-val" id="lr-stars">⭐</div><div class="lr-lbl">Stars</div></div>
+    </div>
+  </div>
+
+  <div style="font-family:'Nunito',sans-serif;font-weight:900;font-size:17px;color:#fff;margin-bottom:10px;">Choose your vehicle!</div>
+  <div class="v-row">
+    <div class="v-card sel" onclick="selV('car',this)"><div class="ico">🚗</div><div class="lbl">Car</div></div>
+    <div class="v-card" onclick="selV('tram',this)"><div class="ico">🚋</div><div class="lbl">Tram Engine</div></div>
+    <div class="v-card" onclick="selV('truck',this)"><div class="ico">🚛</div><div class="lbl">Truck</div></div>
+  </div>
+  <button class="btn-go" onclick="startGame()">Let's Go! 🚀</button>
+  <a href="soundsafari-admin.html" style="margin-top:16px;font-family:'Nunito',sans-serif;font-size:12px;color:rgba(255,255,255,.45);text-decoration:none;letter-spacing:.5px;" title="Admin settings">⚙️ Admin</a>
+</div>
+
+<!-- GAME -->
+<div id="game-wrap" class="hidden">
+  <div id="hud">
+    <span class="hud-pill">⭐ <b id="sc">0</b></span>
+    <span class="hud-pill" id="cat-badge">🐾 Animals</span>
+    <span class="hud-pill">🚦 <b id="sn">1</b>/100</span>
+    <button class="hud-btn" id="btn-change-v" onclick="playTICK();openChangeV()">🚗 Change</button>
+    <button class="hud-btn" id="btn-home" onclick="playTICK();openQuit()">🏠 Home</button>
+  </div>
+  <canvas id="gc" width="900" height="460"></canvas>
+  <div id="ctrl-row">
+    <button class="cb"
+      onmousedown="playTICK();startMove(-1)" onmouseup="stopMove()"
+      ontouchstart="playTICK();startMove(-1)" ontouchend="stopMove()">◀</button>
+    <button class="cb"
+      onmousedown="playTICK();startMove(1)" onmouseup="stopMove()"
+      ontouchstart="playTICK();startMove(1)" ontouchend="stopMove()">▶</button>
+  </div>
+  <div id="hint-bar">Press ▶ to drive — tap the big picture when the car stops at the signal!</div>
+</div>
+
+<!-- CELEBRATION -->
+<div id="celeb" class="hidden">
+  <div class="celeb-box">
+    <div class="c-em" id="c-em">🎉</div>
+    <div class="c-msg" id="c-msg">Amazing!</div>
+    <div class="c-name" id="c-name">BALL</div>
+    <div class="c-cat" id="c-cat">🍎 Fruit</div>
+  </div>
+</div>
+
+<!-- END -->
+<div id="end-screen" class="hidden">
+  <div style="font-size:88px;">🏆</div>
+  <div style="font-size:clamp(28px,5vw,54px);color:#fff;text-shadow:3px 3px 0 rgba(0,0,0,.3);">You did it! All 100!</div>
+  <div style="font-size:54px;letter-spacing:6px;margin:12px 0;" id="e-stars">⭐⭐⭐</div>
+  <div style="font-family:'Nunito',sans-serif;font-weight:900;font-size:22px;color:#FFF9C4;margin-bottom:24px;">Score: <b id="e-sc">0</b> points</div>
+  <button class="btn-go" onclick="restart()">Play Again! 🔄</button>
+</div>
+
+<!-- QUIT MODAL -->
+<div id="quit-modal" class="hidden">
+  <div class="quit-box">
+    <div class="quit-title">🏠 Go Home?</div>
+    <div class="quit-sub">Your progress will be saved as your last run.</div>
+    <div class="sc-grid">
+      <div class="sc-cell"><div class="sc-val" id="qm-score">0</div><div class="sc-lbl">Score</div></div>
+      <div class="sc-cell"><div class="sc-val" id="qm-signals">0</div><div class="sc-lbl">Signals</div></div>
+      <div class="sc-cell"><div class="sc-val" id="qm-vehicle">🚗</div><div class="sc-lbl">Vehicle</div></div>
+      <div class="sc-cell"><div class="sc-val" id="qm-stars">⭐</div><div class="sc-lbl">Stars</div></div>
+    </div>
+    <div class="quit-btns">
+      <button class="quit-btn yes" onclick="goHome()">Yes, Home</button>
+      <button class="quit-btn no" onclick="closeQuit()">Keep Playing</button>
+    </div>
+  </div>
+</div>
+
+<!-- CHANGE VEHICLE MODAL -->
+<div id="chv-modal" class="hidden">
+  <div class="chv-box">
+    <div class="chv-title">🚗 Change Vehicle</div>
+    <div class="chv-row">
+      <div class="v-card" id="chv-car" onclick="changeV('car')"><div class="ico">🚗</div><div class="lbl">Car</div></div>
+      <div class="v-card" id="chv-tram" onclick="changeV('tram')"><div class="ico">🚋</div><div class="lbl">Tram Engine</div></div>
+      <div class="v-card" id="chv-truck" onclick="changeV('truck')"><div class="ico">🚛</div><div class="lbl">Truck</div></div>
+    </div>
+    <button class="quit-btn no" onclick="closeChangeV()">Cancel</button>
+  </div>
+</div>
+
+<script>
+// ════════════════════════════════════════════════════════
+//  WORD DATA — 100 items, all starting with T sound
+//  Categories: Animals(20), Birds(20), Objects(20), Fruits(20), Vegetables(20)
+// ════════════════════════════════════════════════════════
+const CATEGORIES = {
+  Animals:[
+    {e:'🐯',n:'TIGER'},{e:'🐢',n:'TURTLE'},{e:'🦌',n:'TAPIR'},{e:'🐠',n:'TUNA'},
+    {e:'🦖',n:'T-REX'},{e:'🐦',n:'TEAL'},{e:'🐆',n:'TABBY'},{e:'🦬',n:'TAKIN'},
+    {e:'🦎',n:'TOKAY'},{e:'🦑',n:'TENTACLE'},{e:'🦃',n:'TURKEY'},{e:'🦤',n:'TOUCAN'},
+    {e:'🐊',n:'TOAD'},{e:'🦓',n:'TAPIR'},{e:'🐋',n:'TUNA FISH'},{e:'🦂',n:'TARANTULA'},
+    {e:'🐝',n:'TAWNY BEE'},{e:'🦡',n:'TERRIER'},{e:'🐭',n:'TINY MOUSE'},{e:'🦘',n:'TAMMAR'},
+  ],
+  Birds:[
+    {e:'🦃',n:'TURKEY'},{e:'🦤',n:'TOUCAN'},{e:'🕊️',n:'TURTLEDOVE'},{e:'🦢',n:'TEAL'},
+    {e:'🦅',n:'TALON BIRD'},{e:'🐦',n:'THRUSH'},{e:'🦉',n:'TAWNY OWL'},{e:'🐧',n:'TERN'},
+    {e:'🦜',n:'TANAGER'},{e:'🦚',n:'TOPKNOT'},{e:'🦆',n:'TUFTED DUCK'},{e:'🐓',n:'TOM ROOSTER'},
+    {e:'🦩',n:'TROPICBIRD'},{e:'🦢',n:'TRUMPETER'},{e:'🐤',n:'TINY BIRD'},{e:'🦉',n:'TAIGA OWL'},
+    {e:'🦅',n:'TERCEL'},{e:'🐦',n:'TAILORBIRD'},{e:'🦜',n:'TOCO'},{e:'🕊️',n:'TEAL DOVE'},
+  ],
+  Objects:[
+    {e:'🚂',n:'TRAIN'},{e:'🎪',n:'TENT'},{e:'🧸',n:'TEDDY'},{e:'🎺',n:'TRUMPET'},
+    {e:'🏆',n:'TROPHY'},{e:'🎠',n:'TURNTABLE'},{e:'🪁',n:'TOY BOW'},{e:'🧩',n:'TILE'},
+    {e:'🔦',n:'TORCH'},{e:'🪣',n:'TUB'},{e:'🧲',n:'TOOL'},{e:'📻',n:'TRANSISTOR'},
+    {e:'🪤',n:'TRAP'},{e:'⛺',n:'TEPEE'},{e:'🎡',n:'TOP'},{e:'🚜',n:'TRACTOR'},
+    {e:'🎯',n:'TARGET'},{e:'🧵',n:'THREAD'},{e:'🪆',n:'TOY DOLL'},{e:'🎻',n:'TUNE BOX'},
+  ],
+  Fruits:[
+    {e:'🍅',n:'TOMATO'},{e:'🍊',n:'TANGERINE'},{e:'🍑',n:'TAMARIND'},{e:'🥝',n:'TAMARILLO'},
+    {e:'🫐',n:'THORN BERRY'},{e:'🍈',n:'TANGELO'},{e:'🍇',n:'TREACLE GRAPE'},{e:'🍒',n:'TART CHERRY'},
+    {e:'🍓',n:'TROPICAL BERRY'},{e:'🥭',n:'THAI MANGO'},{e:'🍍',n:'TROPICAL PINE'},{e:'🍌',n:'THAI BANANA'},
+    {e:'🫒',n:'TABLE OLIVE'},{e:'🍋',n:'TANGY LEMON'},{e:'🍎',n:'TOFFEE APPLE'},{e:'🍐',n:'TAWNY PEAR'},
+    {e:'🍏',n:'TART APPLE'},{e:'🍇',n:'TABLE GRAPE'},{e:'🍊',n:'TROPICAL ORANGE'},{e:'🥝',n:'TEAM KIWI'},
+  ],
+  Vegetables:[
+    {e:'🍅',n:'TOMATO'},{e:'🌽',n:'TASSLE CORN'},{e:'🥦',n:'TENDER BROC'},{e:'🧅',n:'TURNIP'},
+    {e:'🥔',n:'TATER'},{e:'🫛',n:'TENDERPEA'},{e:'🥒',n:'TELEGRAPH'},{e:'🍆',n:'THIN BRINJAL'},
+    {e:'🌿',n:'TARRAGON'},{e:'🧄',n:'TOP GARLIC'},{e:'🥬',n:'TATSOI'},{e:'🫑',n:'THIN PEPPER'},
+    {e:'🥕',n:'TOP CARROT'},{e:'🌾',n:'TEFF'},{e:'🥗',n:'TOSSED SALAD'},{e:'🫚',n:'TUNG OIL'},
+    {e:'🍄',n:'TRUFFLE'},{e:'🌰',n:'TREE NUT'},{e:'🥦',n:'TENDER STEM'},{e:'🧅',n:'TOPPED TURNIP'},
+  ],
+};
+const CAT_ICONS={Animals:'🐾',Birds:'🐦',Objects:'🎯',Fruits:'🍎',Vegetables:'🥦'};
+const CHEERS=['Amazing! 🌟','Super! 🎊','Brilliant! 🏅','Wow! 🥳','Perfect! 🎯','Great job! 👏','Yay! 🎉','Fantastic! 🦄','Terrific! 🌈','Top job! ⭐'];
+const VMAP={car:'🚗', tram:'🚋', truck:'🚛'};
+const CF_COLS=['#FF4444','#FFD700','#44DD44','#4488FF','#FF8C00','#FF44CC','#00CCFF'];
+
+function buildWordList(){
+  const all=[];
+  for(const [cat,val] of Object.entries(CATEGORIES)){
+    // Support both plain array (default) and {icon, words} format (admin config)
+    const words = Array.isArray(val) ? val : (val.words||[]);
+    words.forEach(w=>all.push({...w,cat}));
+  }
+  // shuffle
+  for(let i=all.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [all[i],all[j]]=[all[j],all[i]];
+  }
+  return all; // 100 items
+}
+
+// ════════════════════════════════════════════════════════
+//  ADMIN CONFIG LOADER
+//  Loads customisations saved by admin.html via localStorage
+// ════════════════════════════════════════════════════════
+function loadAdminConfig(){
+  try{
+    const raw = localStorage.getItem('soundSafariConfig');
+    if(!raw) return;
+    const cfg = JSON.parse(raw);
+
+    // ── Vehicles ──
+    if(cfg.vehicles && cfg.vehicles.length){
+      Object.keys(VMAP).forEach(k=>delete VMAP[k]);
+      cfg.vehicles.forEach(v=>{ VMAP[v.id] = v.imgUrl||v.emoji||'🚗'; });
+
+      // Rebuild title-screen vehicle cards
+      const vrow = document.querySelector('.v-row');
+      if(vrow){
+        vrow.innerHTML='';
+        cfg.vehicles.forEach((v,i)=>{
+          const display = v.imgUrl
+            ? `<img src="${v.imgUrl}" style="width:40px;height:40px;object-fit:contain;">`
+            : `<div class="ico">${v.emoji||'🚗'}</div>`;
+          const card = document.createElement('div');
+          card.className='v-card'+(i===0?' sel':'');
+          card.setAttribute('onclick',`selV('${v.id}',this)`);
+          card.innerHTML=`${display}<div class="lbl">${v.label}</div>`;
+          vrow.appendChild(card);
+        });
+        vType  = cfg.vehicles[0].id;
+        vEmoji = VMAP[vType];
+      }
+    }
+
+    // ── Words — normalise to plain arrays so buildWordList works ──
+    if(cfg.categories){
+      // Clear existing
+      Object.keys(CATEGORIES).forEach(k=>delete CATEGORIES[k]);
+      Object.keys(CAT_ICONS).forEach(k=>delete CAT_ICONS[k]);
+      for(const [k,v] of Object.entries(cfg.categories)){
+        // Admin saves as {icon, words:[]} — store words array directly
+        CATEGORIES[k] = Array.isArray(v) ? v : (v.words||[]);
+        CAT_ICONS[k]  = Array.isArray(v) ? '📂' : (v.icon||'📂');
+      }
+    }
+
+    // ── Sounds ──
+    if(cfg.sounds) window._adminSounds = cfg.sounds;
+
+    console.log('[Sound Safari] Admin config loaded ✅');
+  } catch(e){ console.warn('[Sound Safari] Could not load admin config:', e); }
+}
+
+
+const W = 900, H = 460;
+
+// Fixed layout rows (canvas units)
+const SKY_H    = 200;   // sky zone height
+const GRASS_H  =  46;   // green strip above road
+const ROAD_Y   = SKY_H + GRASS_H;   // 246
+const ROAD_H   = 124;
+const LOWER_Y  = ROAD_Y + ROAD_H;   // 370
+
+// Vehicle sits on road, left area
+const VEH_X    = 150;   // fixed canvas x
+const VEH_Y    = ROAD_Y + 14;  // top of vehicle emoji
+
+// Signal is always drawn at a fixed x on screen
+// The world scrolls so the signal appears to move toward the car
+const SIG_SCREEN_X = 620; // where signal pole stands on canvas
+
+// Card is drawn to the RIGHT of the signal pole, at road level above it
+const CARD_CX  = SIG_SCREEN_X;   // centred on pole
+const CARD_CY  = ROAD_Y - 170;   // above the signal box
+
+const CARD_HALF = 70;   // hit box radius
+
+// ════════════════════════════════════════════════════════
+//  STATE
+// ════════════════════════════════════════════════════════
+let cv, ctx;
+let vType='car', vEmoji='🚗';
+
+let gameWords = [];
+let wIdx = 0;
+let score = 0;
+
+// scrolling
+let worldOffset = 0;      // increases as car drives right
+let driving = 0;          // -1 / 0 / 1
+const DRIVE_SPEED = 4;
+
+// signal state
+let sigState = 'approaching'; // 'approaching' | 'stopped' | 'green' | 'passing'
+let cardScale = 0;
+let celebPending = false;
+
+// world x where the CURRENT signal pole stands
+let sigWorldX = SIG_SCREEN_X; // first signal at screen x on start
+
+// stripe animation
+let stripeOff = 0;
+
+// clouds (world x positions)
+let clouds = [{wx:80,y:42,w:130},{wx:320,y:26,w:92},{wx:580,y:50,w:148},{wx:820,y:30,w:110}];
+
+let animId = null;
+let celebTimeout = null;
+
+// ════════════════════════════════════════════════════════
+//  TITLE
+// ════════════════════════════════════════════════════════
+
+function startGame(){
+  document.getElementById('title-screen').classList.add('hidden');
+  document.getElementById('game-wrap').classList.remove('hidden');
+
+  cv  = document.getElementById('gc');
+  ctx = cv.getContext('2d');
+
+  gameWords   = buildWordList();
+  wIdx        = 0;
+  score       = 0;
+  worldOffset = 0;
+  driving     = 0;
+  stripeOff   = 0;
+  sigWorldX   = SIG_SCREEN_X;   // first signal lines up right away
+  sigState    = 'approaching';
+  cardScale   = 0;
+  celebPending= false;
+
+  updateHUD();
+
+  if(animId) cancelAnimationFrame(animId);
+  loop();
+
+  cv.addEventListener('click', onTap);
+  cv.addEventListener('touchend', e=>{ e.preventDefault(); onTap(e.changedTouches[0]); }, {passive:false});
+
+  speakTTS("Let's go! Press the right arrow to drive!");
+}
+
+// ════════════════════════════════════════════════════════
+//  GAME LOOP
+// ════════════════════════════════════════════════════════
+function loop(){
+  update();
+  drawScene();
+  animId = requestAnimationFrame(loop);
+}
+
+function update(){
+  if(celebPending) return;
+
+  const canDriveForward  = (sigState !== 'stopped');
+  const canDriveBackward = true;
+
+  if(driving === 1 && canDriveForward){
+    worldOffset += DRIVE_SPEED;
+    stripeOff   -= DRIVE_SPEED;
+  } else if(driving === -1 && canDriveBackward){
+    worldOffset -= DRIVE_SPEED;
+    if(worldOffset < 0) worldOffset = 0;
+    stripeOff   += DRIVE_SPEED;
+  }
+
+  if(stripeOff >  100) stripeOff -= 100;
+  if(stripeOff < -100) stripeOff += 100;
+
+  // Where is the signal on screen right now?
+  const sigScreenX = sigWorldX - worldOffset;
+
+  // Card pop-in: start showing card when signal is within 350px on screen
+  if(sigState === 'approaching'){
+    if(sigScreenX < VEH_X + 350){
+      cardScale = Math.min(1, cardScale + 0.06);
+    }
+    // Stop car when signal is close (front of car reaches signal base)
+    if(sigScreenX <= VEH_X + 200){
+      sigState = 'stopped';
+      driving  = 0;
+    }
+  }
+
+  // After green: let car pass signal, then advance to next
+  if(sigState === 'green'){
+    // signal scrolls off left as car drives
+    if(sigScreenX < VEH_X - 60){
+      nextSignal();
+    }
+  }
+}
+
+function nextSignal(){
+  wIdx++;
+  if(wIdx >= gameWords.length){ endGame(); return; }
+  sigWorldX   = worldOffset + SIG_SCREEN_X + 500;
+  sigState    = 'approaching';
+  cardScale   = 0;
+  updateHUD();
+  speakTTS('Great! Keep driving!');
+}
+
+// ════════════════════════════════════════════════════════
+//  DRAW
+// ════════════════════════════════════════════════════════
+function drawScene(){
+  // ── SKY ──────────────────────────────────────────────
+  const sg = ctx.createLinearGradient(0,0,0,SKY_H);
+  sg.addColorStop(0,'#1565C0'); sg.addColorStop(1,'#B3E5FC');
+  ctx.fillStyle = sg;
+  ctx.fillRect(0, 0, W, SKY_H);
+
+  // sun
+  ctx.save();
+  ctx.shadowColor='rgba(255,230,0,.5)'; ctx.shadowBlur=34;
+  ctx.font='52px serif'; ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.fillText('☀️', W-72, 56);
+  ctx.restore();
+
+  // clouds (parallax at 30% world speed)
+  clouds.forEach(c=>{
+    const sx = ((c.wx - worldOffset*0.3) % (W+300) + W+300) % (W+300) - 150;
+    drawCloud(sx, c.y, c.w);
+  });
+
+  // ── UPPER GRASS ──────────────────────────────────────
+  const gg = ctx.createLinearGradient(0,SKY_H,0,SKY_H+GRASS_H);
+  gg.addColorStop(0,'#A5D6A7'); gg.addColorStop(1,'#66BB6A');
+  ctx.fillStyle = gg;
+  ctx.fillRect(0, SKY_H, W, GRASS_H);
+
+  // trees on grass strip (world positions)
+  const treeWX = [60,250,480,720,980,1240,1500,1760,2020,2300,2580,2850,3100,3400,3700,4000];
+  ctx.font='38px serif'; ctx.textAlign='center'; ctx.textBaseline='bottom';
+  treeWX.forEach(wx=>{
+    const sx = wx - worldOffset + VEH_X;
+    if(sx > -60 && sx < W+60) ctx.fillText('🌳', sx, SKY_H+GRASS_H+2);
+  });
+
+  // ── ROAD ─────────────────────────────────────────────
+  ctx.fillStyle='#484848';
+  ctx.fillRect(0, ROAD_Y, W, ROAD_H);
+
+  // road edges
+  ctx.fillStyle='#FFEE58';
+  ctx.fillRect(0, ROAD_Y,          W, 8);
+  ctx.fillRect(0, ROAD_Y+ROAD_H-8, W, 8);
+
+  // dashes
+  ctx.fillStyle='rgba(255,238,88,.8)';
+  const dashOff = ((stripeOff % 100) + 100) % 100;
+  for(let sx = dashOff - 100; sx < W + 100; sx += 100)
+    ctx.fillRect(sx, ROAD_Y + ROAD_H/2 - 5, 66, 10);
+
+  // ── LOWER GRASS ──────────────────────────────────────
+  const lg = ctx.createLinearGradient(0,LOWER_Y,0,H);
+  lg.addColorStop(0,'#4CAF50'); lg.addColorStop(1,'#2E7D32');
+  ctx.fillStyle = lg;
+  ctx.fillRect(0, LOWER_Y, W, H-LOWER_Y);
+
+  // ── SIGNAL ───────────────────────────────────────────
+  const sigSX = sigWorldX - worldOffset;  // current screen x of signal
+
+  if(sigSX > -60 && sigSX < W + 60){
+    drawSignal(sigSX, sigState === 'green');
+
+    // ── ITEM CARD ────────────────────────────────────────
+    if(wIdx < gameWords.length && cardScale > 0.02 && sigState !== 'green'){
+      drawItemCard(sigSX, cardScale, gameWords[wIdx]);
+    }
+  }
+
+  // ── VEHICLE ──────────────────────────────────────────
+  // 🚗 emoji naturally faces LEFT, so:
+  //   driving forward (1)  → flip horizontally so it faces RIGHT
+  //   driving backward (-1) or stopped → keep default (faces LEFT)
+  ctx.save();
+  ctx.font = '68px serif';
+  ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+  if(driving === 1 || sigState === 'green'){
+    // face right — mirror around the vehicle centre
+    ctx.translate(VEH_X, VEH_Y + 34);
+    ctx.scale(-1, 1);
+    ctx.fillText(vEmoji, 0, -34);
+  } else {
+    // face left (default)
+    ctx.fillText(vEmoji, VEH_X, VEH_Y);
+  }
+  ctx.restore();
+
+  // ── STOPPED HINT ─────────────────────────────────────
+  if(sigState === 'stopped' && cardScale >= 0.9){
+    // draw "TAP!" arrow below card
+    ctx.save();
+    ctx.font = 'bold 20px Fredoka One,cursive';
+    ctx.fillStyle = '#FFD700';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+    // bouncing arrow
+    const bounce = Math.sin(Date.now()/300)*6;
+    ctx.fillText('👆 TAP!', sigSX, ROAD_Y - 60 + bounce);
+    ctx.restore();
+  }
+}
+
+// ── Draw signal pole + box + lights ──────────────────
+function drawSignal(sx, green){
+  const poleH = 120;
+  const poleTop= ROAD_Y - poleH;
+  const boxW=58, boxH=88;
+  const boxX=sx-boxW/2, boxY=poleTop-boxH;
+
+  // pole
+  const pg=ctx.createLinearGradient(sx-6,0,sx+6,0);
+  pg.addColorStop(0,'#777'); pg.addColorStop(.5,'#bbb'); pg.addColorStop(1,'#666');
+  ctx.fillStyle=pg;
+  ctx.fillRect(sx-5, poleTop, 10, poleH);
+
+  // housing
+  ctx.fillStyle='#111';
+  roundRect(ctx, boxX, boxY, boxW, boxH, 11);
+  ctx.fill();
+  ctx.strokeStyle='#555'; ctx.lineWidth=2; ctx.stroke();
+
+  // RED light
+  ctx.save();
+  if(!green){ ctx.shadowColor='rgba(255,60,60,.8)'; ctx.shadowBlur=20; }
+  ctx.fillStyle = green ? '#440000' : '#FF3333';
+  ctx.beginPath(); ctx.arc(sx, boxY+24, 17, 0, Math.PI*2); ctx.fill();
+  ctx.restore();
+
+  // GREEN light
+  ctx.save();
+  if(green){ ctx.shadowColor='rgba(40,255,90,.8)'; ctx.shadowBlur=20; }
+  ctx.fillStyle = green ? '#00DD44' : '#002200';
+  ctx.beginPath(); ctx.arc(sx, boxY+62, 17, 0, Math.PI*2); ctx.fill();
+  ctx.restore();
+}
+
+// ── Draw item card above and to the right of signal ──
+function drawItemCard(sx, scale, word){
+  // Position: to the RIGHT side of the signal, road-level height
+  const cx = sx + 90;   // shift right of pole
+  const cy = ROAD_Y - 80; // above grass line
+
+  ctx.save();
+  ctx.translate(cx, cy);
+  ctx.scale(scale, scale);
+
+  // white rounded card with gold border
+  ctx.shadowColor='rgba(0,0,0,.3)'; ctx.shadowBlur=16;
+  ctx.fillStyle='white';
+  roundRect(ctx, -65, -72, 130, 110, 18);
+  ctx.fill();
+  ctx.shadowBlur=0;
+  ctx.strokeStyle='#FFD700'; ctx.lineWidth=5;
+  roundRect(ctx, -65, -72, 130, 110, 18);
+  ctx.stroke();
+
+  // big emoji
+  ctx.font='72px serif';
+  ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.fillText(word.e, 0, -16);
+
+  ctx.restore();
+
+  // Store actual screen position for hit detection
+  // (these are in canvas pixel units, NOT scaled by CSS)
+  window._cardHitX = cx;
+  window._cardHitY = cy;
+}
+
+// ════════════════════════════════════════════════════════
+//  TAP HANDLER
+// ════════════════════════════════════════════════════════
+function onTap(e){
+  if(sigState !== 'stopped' || celebPending) return;
+  if(cardScale < 0.6) return;  // card not visible enough
+
+  const rect = cv.getBoundingClientRect();
+  // Convert screen tap → canvas units
+  const scaleX = W / rect.width;
+  const scaleY = H / rect.height;
+  const tx = (e.clientX - rect.left) * scaleX;
+  const ty = (e.clientY - rect.top)  * scaleY;
+
+  const hitX = window._cardHitX || 0;
+  const hitY = window._cardHitY || 0;
+
+  const dx = tx - hitX;
+  const dy = ty - hitY;
+  const dist = Math.sqrt(dx*dx + dy*dy);
+
+  if(dist < 80){
+    doTap();
+  }
+}
+
+function doTap(){
+  if(celebPending) return;
+  celebPending = true;
+
+  const w = gameWords[wIdx];
+  sigState = 'green';
+  score += 10;
+  updateHUD();
+
+  playCHIME();
+  // Speak word AFTER chime finishes (~450ms), then again in celebration
+  setTimeout(()=> speakTTS(w.n), 460);
+  celebrate(w);
+}
+
+// ════════════════════════════════════════════════════════
+//  CELEBRATION
+// ════════════════════════════════════════════════════════
+function celebrate(w){
+  const msg = CHEERS[Math.floor(Math.random()*CHEERS.length)];
+  document.getElementById('c-em').textContent  = w.e;
+  document.getElementById('c-msg').textContent = msg;
+  document.getElementById('c-name').textContent= w.n;
+  document.getElementById('c-cat').textContent = CAT_ICONS[w.cat]+' '+w.cat;
+  document.getElementById('celeb').classList.remove('hidden');
+  spawnConfetti();
+
+  playFANFARE();
+  // Repeat word clearly after fanfare so child can hear and say it
+  setTimeout(()=> speakTTS(w.n), 1100);
+
+  if(celebTimeout) clearTimeout(celebTimeout);
+  celebTimeout = setTimeout(()=>{
+    document.getElementById('celeb').classList.add('hidden');
+    clearConfetti();
+    celebPending = false;
+  }, 2800);
+}
+
+// ════════════════════════════════════════════════════════
+//  HUD + END
+// ════════════════════════════════════════════════════════
+function updateHUD(){
+  document.getElementById('sc').textContent = score;
+  document.getElementById('sn').textContent = Math.min(wIdx+1,100);
+  if(wIdx < gameWords.length){
+    const cat = gameWords[wIdx].cat;
+    document.getElementById('cat-badge').textContent = CAT_ICONS[cat]+' '+cat;
+  }
+}
+
+function endGame(){
+  cancelAnimationFrame(animId);
+  saveLastRun();
+  document.getElementById('game-wrap').classList.add('hidden');
+  document.getElementById('end-screen').classList.remove('hidden');
+  document.getElementById('e-sc').textContent   = score;
+  document.getElementById('e-stars').textContent= score>=800?'⭐⭐⭐':score>=500?'⭐⭐':'⭐';
+  speakTTS('You finished all one hundred signals! You are amazing!');
+}
+
+function goHome(){
+  cancelAnimationFrame(animId);
+  saveLastRun();
+  closeQuit();
+  document.getElementById('game-wrap').classList.add('hidden');
+  document.getElementById('title-screen').classList.remove('hidden');
+  showLastRun();
+}
+
+function restart(){
+  document.getElementById('end-screen').classList.add('hidden');
+  document.getElementById('title-screen').classList.remove('hidden');
+  showLastRun();
+}
+
+// ════════════════════════════════════════════════════════
+//  LAST RUN  — save & display scorecard
+// ════════════════════════════════════════════════════════
+let lastRun = null;
+
+function starsFor(sc,total){
+  const pct=sc/(total*10);
+  return pct>=0.8?'⭐⭐⭐':pct>=0.5?'⭐⭐':'⭐';
+}
+
+function saveLastRun(){
+  lastRun = {
+    score,
+    signals: wIdx,
+    vehicle: vEmoji,
+    stars: starsFor(score, wIdx||1),
+  };
+}
+
+function showLastRun(){
+  if(!lastRun) return;
+  document.getElementById('lr-score').textContent   = lastRun.score;
+  document.getElementById('lr-signals').textContent = lastRun.signals;
+  document.getElementById('lr-vehicle').textContent = lastRun.vehicle;
+  document.getElementById('lr-stars').textContent   = lastRun.stars;
+  document.getElementById('last-run').classList.remove('hidden');
+}
+
+// ════════════════════════════════════════════════════════
+//  QUIT MODAL
+// ════════════════════════════════════════════════════════
+function openQuit(){
+  // pause driving
+  driving = 0;
+  // fill in live stats
+  document.getElementById('qm-score').textContent   = score;
+  document.getElementById('qm-signals').textContent = wIdx;
+  document.getElementById('qm-vehicle').textContent = vEmoji;
+  document.getElementById('qm-stars').textContent   = starsFor(score, wIdx||1);
+  document.getElementById('quit-modal').classList.remove('hidden');
+}
+function closeQuit(){
+  document.getElementById('quit-modal').classList.add('hidden');
+}
+
+// ════════════════════════════════════════════════════════
+//  CHANGE VEHICLE MODAL
+// ════════════════════════════════════════════════════════
+function openChangeV(){
+  driving = 0;
+  // mark current vehicle selected
+  ['car','tram','truck'].forEach(v=>{
+    document.getElementById('chv-'+v).classList.toggle('sel', v===vType);
+  });
+  document.getElementById('chv-modal').classList.remove('hidden');
+}
+function closeChangeV(){
+  document.getElementById('chv-modal').classList.add('hidden');
+}
+function changeV(v){
+  vType   = v;
+  vEmoji  = VMAP[v];
+  stopEngine(); // stop current sound so new vehicle sound plays fresh
+  document.getElementById('btn-change-v').textContent = vEmoji + ' Change';
+  closeChangeV();
+}
+
+// also keep title-screen selV working
+function selV(v,el){
+  vType=v; vEmoji=VMAP[v];
+  document.querySelectorAll('.v-card').forEach(c=>c.classList.remove('sel'));
+  el.classList.add('sel');
+}
+// ════════════════════════════════════════════════════════
+//  MOVEMENT  — ▶ = forward,  ◀ = back
+// ════════════════════════════════════════════════════════
+function startMove(dir){
+  driving = dir;
+  startEngine();
+}
+function stopMove(){
+  driving = 0;
+  stopEngine();
+}
+
+document.addEventListener('keydown', e=>{
+  if(e.key==='ArrowRight') startMove(1);
+  if(e.key==='ArrowLeft')  startMove(-1);
+});
+document.addEventListener('keyup', e=>{
+  if(e.key==='ArrowRight'||e.key==='ArrowLeft') stopMove();
+});
+
+// ════════════════════════════════════════════════════════
+//  HELPERS
+// ════════════════════════════════════════════════════════
+function drawCloud(x,y,w){
+  ctx.fillStyle='rgba(255,255,255,.88)';
+  ctx.beginPath(); ctx.ellipse(x,y,w/2,17,0,0,Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.ellipse(x-w*.22,y+5,w*.28,13,0,0,Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.ellipse(x+w*.22,y+5,w*.30,14,0,0,Math.PI*2); ctx.fill();
+}
+
+function roundRect(c,x,y,w,h,r){
+  c.beginPath();
+  c.moveTo(x+r,y);
+  c.lineTo(x+w-r,y); c.quadraticCurveTo(x+w,y,x+w,y+r);
+  c.lineTo(x+w,y+h-r); c.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
+  c.lineTo(x+r,y+h); c.quadraticCurveTo(x,y+h,x,y+h-r);
+  c.lineTo(x,y+r); c.quadraticCurveTo(x,y,x+r,y);
+  c.closePath();
+}
+
+// ════════════════════════════════════════════════════════
+//  AUDIO ENGINE — Web Audio API (100% offline, no files)
+// ════════════════════════════════════════════════════════
+let AC = null;
+
+function getAC(){
+  if(!AC) AC = new (window.AudioContext || window.webkitAudioContext)();
+  // Resume if suspended (browser autoplay policy)
+  if(AC.state === 'suspended') AC.resume();
+  return AC;
+}
+
+// ── Generic tone ─────────────────────────────────────
+function playTone(freq, type='sine', duration=0.18, vol=0.35, startDelay=0){
+  try{
+    const ac   = getAC();
+    const osc  = ac.createOscillator();
+    const gain = ac.createGain();
+    osc.connect(gain);
+    gain.connect(ac.destination);
+    osc.type = type;
+    osc.frequency.value = freq;
+    const t = ac.currentTime + startDelay;
+    gain.gain.setValueAtTime(vol, t);
+    gain.gain.exponentialRampToValueAtTime(0.001, t + duration);
+    osc.start(t);
+    osc.stop(t + duration + 0.01);
+  } catch(e){}
+}
+
+// ── Tap / correct chime: ascending 4-note ding ───────
+function playCHIME(){
+  const S = window._adminSounds?.chime;
+  const baseFreq = S?.freq||523;
+  const wave = S?.waveform||'sine';
+  const dur  = S?.duration||0.22;
+  const vol  = S?.volume||0.28;
+  const notes = [baseFreq, baseFreq*1.25, baseFreq*1.5, baseFreq*2];
+  notes.forEach((f,i) => playTone(f, wave, dur, vol, i * 0.1));
+}
+
+// ── Green light fanfare ───────────────────────────────
+function playFANFARE(){
+  const S = window._adminSounds?.fanfare;
+  const baseFreq = S?.freq||523;
+  const wave = S?.waveform||'triangle';
+  const dur  = S?.duration||0.22;
+  const vol  = S?.volume||0.32;
+  const mults = [1,1.25,1.5,2,1.5,2];
+  mults.forEach((m,i) => playTone(baseFreq*m, wave, dur, vol, i*0.12));
+}
+
+// ── Button click tick ────────────────────────────────
+function playTICK(){
+  const S = window._adminSounds?.tick;
+  playTone(S?.freq||900, S?.waveform||'square', S?.duration||0.045, S?.volume||0.18);
+}
+
+// ── Vehicle-specific drive sounds ────────────────────
+// Each vehicle gets its own kid-friendly rhythm & tone
+let engineNodes = [], engineGain = null, engineInterval = null;
+
+function startEngine(){
+  try{
+    if(engineInterval || engineNodes.length) return;
+    const ac = getAC();
+
+    // Use admin-configured sound type for this vehicle if set
+    // Find vehicle soundType from admin config
+    let sndType = vType; // default: use vehicle id
+    const adminCfg = window._adminSounds;
+    // Check if vehicle has a custom soundType
+    try{
+      const raw=localStorage.getItem('soundSafariConfig');
+      if(raw){
+        const cfg=JSON.parse(raw);
+        const vc=cfg.vehicles&&cfg.vehicles.find(v=>v.id===vType);
+        if(vc&&vc.soundType) sndType=vc.soundType;
+      }
+    } catch(e){}
+
+    const engineKey = 'engine_'+(sndType==='silent'?null:sndType==='car'?'car':sndType==='tram'?'tram':sndType==='truck'?'truck':sndType);
+    const S = (adminCfg&&adminCfg[engineKey]) || null;
+
+    if(sndType==='silent') return;
+
+    const useCar   = sndType==='car';
+    const useTram  = sndType==='tram';
+    const useTruck = sndType==='truck'||(!useCar&&!useTram);
+
+    if(useCar){
+      engineGain = ac.createGain();
+      engineGain.gain.value = S?.volume??0.07;
+      engineGain.connect(ac.destination);
+      const osc = ac.createOscillator();
+      osc.type = S?.waveform||'sawtooth';
+      osc.frequency.value = S?.baseFreq||80;
+      osc.connect(engineGain); osc.start();
+      engineNodes.push(osc);
+      const lfoRate = S?.lfoRate??6;
+      if(lfoRate>0){
+        const lfo=ac.createOscillator(), lfoGain=ac.createGain();
+        lfo.frequency.value=lfoRate; lfoGain.gain.value=12;
+        lfo.connect(lfoGain); lfoGain.connect(osc.frequency); lfo.start();
+        engineNodes.push(lfo);
+      }
+    } else if(useTram){
+      engineGain = ac.createGain();
+      engineGain.gain.value = S?.volume??0.05;
+      engineGain.connect(ac.destination);
+      const osc=ac.createOscillator();
+      osc.type=S?.waveform||'sine'; osc.frequency.value=S?.baseFreq||180;
+      osc.connect(engineGain); osc.start(); engineNodes.push(osc);
+      const osc2=ac.createOscillator(), g2=ac.createGain();
+      osc2.type='sine'; osc2.frequency.value=(S?.baseFreq||180)*2;
+      g2.gain.value=(S?.volume||0.05)*0.5;
+      osc2.connect(g2); g2.connect(ac.destination); osc2.start(); engineNodes.push(osc2);
+      engineInterval=setInterval(()=>{ playTone(200,'square',0.03,0.12); setTimeout(()=>playTone(200,'square',0.03,0.1),140); },500);
+    } else {
+      engineGain = ac.createGain();
+      engineGain.gain.value = S?.volume??0.09;
+      engineGain.connect(ac.destination);
+      const osc=ac.createOscillator();
+      osc.type=S?.waveform||'sawtooth'; osc.frequency.value=S?.baseFreq||45;
+      osc.connect(engineGain); osc.start(); engineNodes.push(osc);
+      engineInterval=setInterval(()=>{ playTone(55,'sawtooth',0.08,0.18); setTimeout(()=>playTone(48,'sawtooth',0.06,0.14),200); },420);
+    }
+  } catch(e){}
+}
+
+function stopEngine(){
+  try{
+    if(engineInterval){ clearInterval(engineInterval); engineInterval = null; }
+    if(engineGain){
+      engineGain.gain.exponentialRampToValueAtTime(0.001, getAC().currentTime + 0.2);
+    }
+    setTimeout(()=>{
+      engineNodes.forEach(n=>{ try{ n.stop(); }catch(e){} });
+      engineNodes = [];
+      engineGain  = null;
+    }, 250);
+  } catch(e){}
+}
+
+// ════════════════════════════════════════════════════════
+//  SPEECH — Web Speech API with Web Audio fallback
+//  Works fully OFFLINE when device has TTS voices installed
+// ════════════════════════════════════════════════════════
+let ttsReady = false;
+let cachedVoice = null;
+
+function initVoices(){
+  if(!window.speechSynthesis) return;
+  const pick = () => {
+    const all = window.speechSynthesis.getVoices();
+    // Prefer a clear English female voice
+    cachedVoice =
+      all.find(v=> v.lang.startsWith('en') && /samantha|karen|victoria|zira|google us|google uk/i.test(v.name)) ||
+      all.find(v=> v.lang.startsWith('en-')) ||
+      all.find(v=> v.lang.startsWith('en'))  ||
+      all[0] || null;
+    ttsReady = all.length > 0;
+  };
+  pick();
+  window.speechSynthesis.onvoiceschanged = pick;
+}
+
+function speakTTS(text){
+  // Unlock AudioContext on first user interaction
+  getAC();
+
+  if(!window.speechSynthesis){ speakAudioFallback(text); return; }
+
+  // Chrome bug: speechSynthesis can get stuck — cancel first
+  window.speechSynthesis.cancel();
+
+  const u = new SpeechSynthesisUtterance(text);
+  u.rate  = 0.78;   // slow & clear for toddlers
+  u.pitch = 1.25;
+  u.volume= 1.0;
+  if(cachedVoice) u.voice = cachedVoice;
+
+  // Safari / Chrome sometimes need a tiny delay after cancel
+  setTimeout(() => {
+    try { window.speechSynthesis.speak(u); } catch(e) { speakAudioFallback(text); }
+  }, 80);
+}
+
+// ── Pure-tone fallback: plays a rising "word" melody ─
+// Used when speechSynthesis is unavailable (rare)
+function speakAudioFallback(text){
+  // Map each letter to a musical note frequency
+  const noteMap = {
+    A:440,B:494,C:523,D:587,E:659,F:698,G:784,
+    H:880,I:988,J:1047,K:1175,L:1319,M:1397,
+    N:1480,O:1568,P:1661,Q:1760,R:1865,S:1976,
+    T:2093,U:2217,V:2349,W:2489,X:2637,Y:2794,Z:2960,
+  };
+  const letters = text.toUpperCase().replace(/[^A-Z]/g,'').split('');
+  letters.forEach((ch,i)=>{
+    const freq = noteMap[ch] || 440;
+    playTone(freq/2, 'sine', 0.14, 0.22, i * 0.18);
+  });
+}
+
+// ════════════════════════════════════════════════════════
+//  INIT
+// ════════════════════════════════════════════════════════
+function spawnConfetti(){
+  for(let i=0;i<55;i++){
+    const d=document.createElement('div');
+    d.className='confetti-p';
+    d.style.cssText=`left:${Math.random()*100}vw;top:-14px;background:${CF_COLS[Math.floor(Math.random()*CF_COLS.length)]};animation-delay:${Math.random()*.55}s;animation-duration:${1.2+Math.random()*.8}s;transform:rotate(${Math.random()*360}deg)`;
+    document.body.appendChild(d);
+  }
+}
+function clearConfetti(){ document.querySelectorAll('.confetti-p').forEach(c=>c.remove()); }
+
+// Init voices
+window.onload=()=>{
+  loadAdminConfig();
+  initVoices();
+  // Unlock AudioContext on very first user interaction (browser policy)
+  const unlock = ()=>{ getAC(); document.removeEventListener('touchstart', unlock); document.removeEventListener('mousedown', unlock); };
+  document.addEventListener('touchstart', unlock, {once:true});
+  document.addEventListener('mousedown',  unlock, {once:true});
+};
+</script>
+<script>
+// Register Service Worker for PWA / offline support
+if('serviceWorker' in navigator){
+  window.addEventListener('load', ()=>{
+    navigator.serviceWorker.register('/service-worker.js')
+      .then(r=> console.log('[SW] Registered:', r.scope))
+      .catch(e=> console.warn('[SW] Registration failed:', e));
+  });
+}
+</script>
+</body>
+</html>

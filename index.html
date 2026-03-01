@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sound Safari 🚦</title>
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" href="/favicon.ico" type="image/x-icon">
+<meta name="theme-color" content="#1565C0">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Sound Safari">
+<link rel="apple-touch-icon" href="/icons/icon-152x152.png">
+<meta name="description" content="Interactive toddler speech therapy game — tap the picture, learn the word!">
+<meta property="og:title" content="Sound Safari 🚦">
+<meta property="og:description" content="Interactive toddler speech therapy game">
+<meta property="og:image" content="/icons/icon-512x512.png">
+<meta property="og:type" content="website">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:linear-gradient(180deg,#29B6F6 0%,#81D4FA 44%,#66BB6A 44%,#388E3C 100%);min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:'Segoe UI',system-ui,sans-serif;gap:12px;}
+.emoji{font-size:72px;animation:bob 1.8s ease-in-out infinite;}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+h1{font-size:clamp(36px,8vw,60px);color:#fff;text-shadow:3px 3px 0 #E65100;text-align:center;}
+p{color:#FFF9C4;font-size:16px;margin-bottom:4px;text-align:center;}
+.links{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;margin-top:8px;}
+a.btn{display:inline-flex;align-items:center;gap:8px;padding:15px 32px;border-radius:50px;font-size:18px;font-weight:700;text-decoration:none;box-shadow:0 6px 0 rgba(0,0,0,.2);transition:transform .12s,box-shadow .12s;font-family:inherit;}
+a.btn:active{transform:translateY(4px);box-shadow:0 2px 0 rgba(0,0,0,.2);}
+.game{background:linear-gradient(135deg,#FF8C00,#F4511E);color:#fff;}
+.admin{background:rgba(255,255,255,.92);color:#333;}
+#install-banner{display:none;position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#fff;border-radius:16px;padding:14px 20px;box-shadow:0 8px 32px rgba(0,0,0,.25);align-items:center;gap:12px;font-size:14px;font-family:inherit;max-width:360px;width:90%;}
+#install-banner.show{display:flex;}
+.install-icon{font-size:32px;}
+.install-text strong{display:block;font-size:14px;color:#333;}
+.install-text span{font-size:12px;color:#888;}
+.install-btns{display:flex;gap:6px;margin-left:auto;}
+.install-yes{background:linear-gradient(135deg,#FF8C00,#F4511E);color:#fff;border:none;border-radius:8px;padding:7px 14px;font-weight:700;font-size:13px;cursor:pointer;font-family:inherit;}
+.install-no{background:none;border:1px solid #ddd;border-radius:8px;padding:7px 10px;color:#888;cursor:pointer;font-size:13px;font-family:inherit;}
+</style>
+</head>
+<body>
+<div class="emoji">🚦</div>
+<h1>Sound Safari!</h1>
+<p>Tap the picture — learn the word! 🎉</p>
+<div class="links">
+  <a href="speech-therapy-game.html" class="btn game">🎮 Play</a>
+  <a href="soundsafari-admin.html" class="btn admin">⚙️ Admin</a>
+</div>
+<div id="install-banner">
+  <div class="install-icon">📲</div>
+  <div class="install-text"><strong>Install Sound Safari</strong><span>Add to home screen for offline play</span></div>
+  <div class="install-btns">
+    <button class="install-yes" id="install-yes">Install</button>
+    <button class="install-no" id="install-no">✕</button>
+  </div>
+</div>
+<script>
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>{
+    navigator.serviceWorker.register('/service-worker.js')
+      .then(()=>console.log('[SW] Ready'))
+      .catch(e=>console.warn('[SW] Failed:',e));
+  });
+}
+let deferredPrompt=null;
+window.addEventListener('beforeinstallprompt',e=>{
+  e.preventDefault();deferredPrompt=e;
+  document.getElementById('install-banner').classList.add('show');
+});
+document.getElementById('install-yes').addEventListener('click',async()=>{
+  if(!deferredPrompt)return;
+  deferredPrompt.prompt();
+  const{outcome}=await deferredPrompt.userChoice;
+  deferredPrompt=null;
+  document.getElementById('install-banner').classList.remove('show');
+  if(outcome==='accepted')location.href='speech-therapy-game.html';
+});
+document.getElementById('install-no').addEventListener('click',()=>{
+  document.getElementById('install-banner').classList.remove('show');
+  setTimeout(()=>location.href='speech-therapy-game.html',600);
+});
+if(window.matchMedia('(display-mode: fullscreen)').matches||window.navigator.standalone===true){
+  location.href='speech-therapy-game.html';
+}
+setTimeout(()=>{if(!deferredPrompt)location.href='speech-therapy-game.html';},3000);
+</script>
+</body>
+</html>

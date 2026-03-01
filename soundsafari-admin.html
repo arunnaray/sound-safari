@@ -1,0 +1,1393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sound Safari — Admin Panel</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Fredoka+One&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0f1117;
+  --surface:#1a1d27;
+  --surface2:#22263a;
+  --border:#2e3352;
+  --accent:#f97316;
+  --accent2:#6366f1;
+  --accent3:#22d3ee;
+  --green:#22c55e;
+  --red:#ef4444;
+  --text:#e2e8f0;
+  --muted:#64748b;
+  --radius:14px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{
+  background:var(--bg);
+  font-family:'Space Grotesk',sans-serif;
+  color:var(--text);
+  min-height:100vh;
+}
+
+/* ── LAYOUT ── */
+.shell{display:grid;grid-template-columns:220px 1fr;min-height:100vh;}
+.sidebar{
+  background:var(--surface);
+  border-right:1px solid var(--border);
+  padding:24px 16px;
+  display:flex;flex-direction:column;gap:4px;
+  position:sticky;top:0;height:100vh;overflow-y:auto;
+}
+.main{padding:32px;overflow-y:auto;}
+
+/* ── SIDEBAR ── */
+.logo{
+  font-family:'Fredoka One',cursive;
+  font-size:22px;color:var(--accent);
+  padding:0 8px 20px;
+  border-bottom:1px solid var(--border);
+  margin-bottom:12px;
+  display:flex;align-items:center;gap:8px;
+}
+.nav-item{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 12px;border-radius:10px;
+  cursor:pointer;font-size:14px;font-weight:500;
+  color:var(--muted);transition:all .15s;border:none;background:none;
+  width:100%;text-align:left;
+}
+.nav-item:hover{background:var(--surface2);color:var(--text);}
+.nav-item.active{background:linear-gradient(135deg,rgba(249,115,22,.15),rgba(99,102,241,.1));color:var(--accent);border:1px solid rgba(249,115,22,.25);}
+.nav-icon{font-size:18px;width:22px;text-align:center;}
+.sidebar-footer{margin-top:auto;padding-top:16px;border-top:1px solid var(--border);}
+.save-all-btn{
+  width:100%;padding:11px;border-radius:10px;border:none;cursor:pointer;
+  background:linear-gradient(135deg,var(--accent),#ea580c);
+  color:#fff;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:15px;
+  box-shadow:0 4px 14px rgba(249,115,22,.35);transition:transform .1s,box-shadow .1s;
+}
+.save-all-btn:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(249,115,22,.45);}
+.save-all-btn:active{transform:translateY(1px);}
+
+/* ── TABS ── */
+.tab-panel{display:none;}
+.tab-panel.active{display:block;}
+
+/* ── HEADER ── */
+.page-hdr{margin-bottom:28px;}
+.page-hdr h1{font-size:26px;font-weight:700;margin-bottom:4px;}
+.page-hdr p{font-size:14px;color:var(--muted);}
+
+/* ── CARDS ── */
+.card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius);padding:22px;margin-bottom:16px;
+}
+.card-hdr{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:18px;
+}
+.card-title{font-weight:600;font-size:15px;display:flex;align-items:center;gap:8px;}
+.badge{
+  font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px;
+  background:rgba(99,102,241,.15);color:var(--accent2);border:1px solid rgba(99,102,241,.3);
+}
+
+/* ── VEHICLE CONFIG ── */
+.vehicles-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;}
+.vehicle-card{
+  background:var(--surface2);border:1px solid var(--border);
+  border-radius:12px;padding:18px;position:relative;
+}
+.vehicle-card .vc-header{display:flex;align-items:center;gap:12px;margin-bottom:16px;}
+.vehicle-preview{
+  font-size:36px;width:56px;height:56px;
+  background:var(--surface);border-radius:12px;
+  display:flex;align-items:center;justify-content:center;
+  border:1px solid var(--border);cursor:pointer;position:relative;
+}
+.vehicle-preview.img-mode img{width:44px;height:44px;object-fit:contain;}
+.vc-name{font-weight:600;font-size:15px;}
+.vc-type-badge{font-size:11px;color:var(--muted);}
+.field-group{margin-bottom:12px;}
+.field-label{font-size:12px;color:var(--muted);font-weight:500;margin-bottom:5px;}
+.field-row{display:flex;gap:8px;align-items:center;}
+.inp{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:8px;padding:8px 12px;color:var(--text);
+  font-family:'Space Grotesk',sans-serif;font-size:13px;
+  width:100%;outline:none;transition:border-color .15s;
+}
+.inp:focus{border-color:var(--accent);}
+.inp.emoji-inp{font-size:22px;width:60px;text-align:center;padding:6px;}
+.toggle-btn{
+  font-size:11px;background:var(--surface);border:1px solid var(--border);
+  color:var(--muted);border-radius:6px;padding:6px 10px;cursor:pointer;
+  white-space:nowrap;transition:all .15s;font-family:'Space Grotesk',sans-serif;
+}
+.toggle-btn:hover{border-color:var(--accent2);color:var(--accent2);}
+.toggle-btn.active{background:rgba(99,102,241,.12);border-color:var(--accent2);color:var(--accent2);}
+
+/* ── SOUND CONFIG ── */
+.sound-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.sound-card{
+  background:var(--surface2);border:1px solid var(--border);
+  border-radius:12px;padding:18px;
+}
+.sound-card-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.sound-name{font-weight:600;font-size:14px;}
+.sound-type-tabs{display:flex;gap:4px;}
+.stt-btn{
+  font-size:11px;padding:4px 10px;border-radius:6px;border:1px solid var(--border);
+  background:none;color:var(--muted);cursor:pointer;transition:all .15s;
+  font-family:'Space Grotesk',sans-serif;
+}
+.stt-btn.active{background:rgba(34,211,238,.12);border-color:var(--accent3);color:var(--accent3);}
+.sound-params{display:flex;flex-direction:column;gap:8px;}
+.param-row{display:flex;align-items:center;gap:8px;}
+.param-label{font-size:12px;color:var(--muted);width:80px;flex-shrink:0;}
+.param-val{font-size:12px;color:var(--accent3);width:36px;text-align:right;}
+input[type=range]{
+  -webkit-appearance:none;appearance:none;
+  height:4px;border-radius:4px;background:var(--border);
+  flex:1;cursor:pointer;
+}
+input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none;width:16px;height:16px;border-radius:50%;
+  background:var(--accent3);cursor:pointer;border:2px solid var(--bg);
+}
+.test-btn{
+  margin-top:10px;width:100%;padding:8px;border-radius:8px;border:none;
+  background:rgba(34,211,238,.1);border:1px solid rgba(34,211,238,.25);
+  color:var(--accent3);font-family:'Space Grotesk',sans-serif;font-weight:600;
+  font-size:12px;cursor:pointer;transition:all .15s;
+}
+.test-btn:hover{background:rgba(34,211,238,.2);}
+.url-input-area{display:flex;flex-direction:column;gap:6px;}
+
+/* ── WORD LIST ── */
+.cat-block{margin-bottom:24px;}
+.cat-hdr{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:12px;
+}
+.cat-label{font-weight:700;font-size:15px;display:flex;align-items:center;gap:8px;}
+.words-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
+  gap:8px;
+}
+.word-row{
+  background:var(--surface2);border:1px solid var(--border);
+  border-radius:10px;padding:10px 12px;
+  display:flex;align-items:center;gap:8px;
+}
+.word-emoji{font-size:22px;width:32px;text-align:center;}
+.word-text-inp{
+  flex:1;background:none;border:none;outline:none;
+  color:var(--text);font-family:'Space Grotesk',sans-serif;
+  font-size:13px;font-weight:500;text-transform:uppercase;
+}
+.word-del{
+  background:none;border:none;color:var(--muted);cursor:pointer;
+  font-size:16px;padding:2px;transition:color .1s;
+}
+.word-del:hover{color:var(--red);}
+.add-word-btn{
+  display:flex;align-items:center;gap:6px;justify-content:center;
+  background:var(--surface2);border:1px dashed var(--border);
+  border-radius:10px;padding:10px;cursor:pointer;
+  color:var(--muted);font-size:13px;font-family:'Space Grotesk',sans-serif;
+  font-weight:600;transition:all .15s;
+}
+.add-word-btn:hover{border-color:var(--green);color:var(--green);}
+.add-cat-btn{
+  margin-top:8px;display:flex;align-items:center;gap:6px;
+  background:none;border:1px dashed rgba(99,102,241,.4);
+  border-radius:10px;padding:10px 16px;cursor:pointer;
+  color:var(--accent2);font-size:13px;font-family:'Space Grotesk',sans-serif;
+  font-weight:600;transition:all .15s;width:100%;justify-content:center;
+}
+.add-cat-btn:hover{background:rgba(99,102,241,.08);}
+.cat-icon-inp{font-size:18px;width:40px;text-align:center;margin-right:4px;}
+
+/* ── PREVIEW ── */
+.preview-bar{
+  position:fixed;bottom:0;left:220px;right:0;
+  background:var(--surface);border-top:1px solid var(--border);
+  padding:12px 32px;display:flex;align-items:center;justify-content:space-between;
+  z-index:50;
+}
+.preview-info{font-size:13px;color:var(--muted);}
+.preview-info strong{color:var(--text);}
+.action-row{display:flex;gap:10px;}
+.btn-secondary{
+  padding:9px 20px;border-radius:8px;border:1px solid var(--border);
+  background:none;color:var(--text);font-family:'Space Grotesk',sans-serif;
+  font-weight:600;font-size:13px;cursor:pointer;transition:all .15s;
+}
+.btn-secondary:hover{border-color:var(--accent2);color:var(--accent2);}
+.btn-primary{
+  padding:9px 24px;border-radius:8px;border:none;
+  background:linear-gradient(135deg,var(--accent),#ea580c);
+  color:#fff;font-family:'Space Grotesk',sans-serif;
+  font-weight:700;font-size:13px;cursor:pointer;
+  box-shadow:0 2px 8px rgba(249,115,22,.3);transition:all .15s;
+}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(249,115,22,.4);}
+.btn-danger{
+  padding:9px 20px;border-radius:8px;border:1px solid rgba(239,68,68,.3);
+  background:rgba(239,68,68,.1);color:var(--red);
+  font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:13px;cursor:pointer;transition:all .15s;
+}
+.btn-danger:hover{background:rgba(239,68,68,.2);}
+
+/* ── TOAST ── */
+.toast{
+  position:fixed;bottom:80px;right:32px;
+  background:var(--green);color:#fff;
+  padding:12px 22px;border-radius:12px;
+  font-weight:600;font-size:14px;z-index:999;
+  transform:translateY(80px);opacity:0;
+  transition:all .3s cubic-bezier(.34,1.56,.64,1);
+  pointer-events:none;
+}
+.toast.show{transform:translateY(0);opacity:1;}
+.toast.error{background:var(--red);}
+
+/* ── STATS ── */
+.stat-chips{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:24px;}
+.stat-chip{
+  background:var(--surface2);border:1px solid var(--border);
+  border-radius:10px;padding:10px 16px;
+  display:flex;align-items:center;gap:10px;
+}
+.stat-val{font-size:22px;font-weight:700;color:var(--accent);}
+.stat-lbl{font-size:12px;color:var(--muted);}
+
+/* ── VERSION HISTORY ── */
+.ver-item{
+  background:var(--surface2);border:1px solid var(--border);
+  border-radius:12px;padding:16px 18px;margin-bottom:10px;
+  display:flex;align-items:center;gap:14px;
+  transition:border-color .15s;
+}
+.ver-item:hover{border-color:var(--accent2);}
+.ver-item.is-active{border-color:var(--green);background:rgba(34,197,94,.05);}
+.ver-num{
+  font-size:22px;font-weight:700;color:var(--accent);
+  width:40px;text-align:center;flex-shrink:0;
+}
+.ver-info{flex:1;min-width:0;}
+.ver-name{font-weight:600;font-size:14px;display:flex;align-items:center;gap:8px;}
+.ver-name-inp{
+  background:none;border:none;outline:none;color:var(--text);
+  font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:14px;
+  border-bottom:1px dashed transparent;transition:border-color .15s;cursor:text;
+}
+.ver-name-inp:focus{border-color:var(--accent2);}
+.ver-meta{font-size:11px;color:var(--muted);margin-top:3px;}
+.ver-stats{font-size:11px;color:var(--accent3);margin-top:2px;}
+.ver-actions{display:flex;gap:6px;flex-shrink:0;flex-wrap:wrap;}
+.ver-btn{
+  font-size:11px;font-weight:600;padding:5px 12px;border-radius:7px;
+  border:1px solid var(--border);background:none;color:var(--muted);
+  cursor:pointer;transition:all .15s;font-family:'Space Grotesk',sans-serif;
+}
+.ver-btn.load{border-color:var(--accent2);color:var(--accent2);}
+.ver-btn.load:hover{background:rgba(99,102,241,.12);}
+.ver-btn.activate{border-color:var(--green);color:var(--green);}
+.ver-btn.activate:hover{background:rgba(34,197,94,.1);}
+.ver-btn.dl{border-color:var(--accent3);color:var(--accent3);}
+.ver-btn.dl:hover{background:rgba(34,211,238,.1);}
+.ver-btn.del{border-color:rgba(239,68,68,.3);color:var(--red);}
+.ver-btn.del:hover{background:rgba(239,68,68,.1);}
+.active-chip{
+  font-size:10px;padding:2px 8px;border-radius:8px;
+  background:rgba(34,197,94,.15);color:var(--green);border:1px solid rgba(34,197,94,.3);
+}
+.diff-badge{
+  font-size:10px;padding:2px 8px;border-radius:8px;margin-left:4px;
+  background:rgba(249,115,22,.1);color:var(--accent);border:1px solid rgba(249,115,22,.25);
+}
+.empty-state{
+  text-align:center;padding:48px;color:var(--muted);font-size:15px;
+  border:1px dashed var(--border);border-radius:12px;
+}
+.empty-state .es-icon{font-size:40px;margin-bottom:12px;}
+
+/* ── COMPARE PANEL ── */
+#compare-panel{
+  position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:600;
+  display:flex;align-items:center;justify-content:center;
+}
+#compare-panel.hidden{display:none;}
+.compare-box{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:20px;padding:28px;width:min(90vw,800px);
+  max-height:80vh;overflow-y:auto;
+}
+.compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px;}
+.compare-col{background:var(--surface2);border-radius:12px;padding:14px;}
+.compare-col h3{font-size:13px;font-weight:600;margin-bottom:10px;color:var(--accent2);}
+.diff-line{font-size:12px;font-family:monospace;padding:3px 6px;border-radius:4px;margin:2px 0;}
+.diff-add{background:rgba(34,197,94,.1);color:var(--green);}
+.diff-rem{background:rgba(239,68,68,.1);color:var(--red);}
+.diff-same{color:var(--muted);}
+::-webkit-scrollbar{width:6px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px;}
+
+/* ── RESPONSIVE ── */
+@media(max-width:700px){
+  .shell{grid-template-columns:1fr;}
+  .sidebar{position:static;height:auto;flex-direction:row;flex-wrap:wrap;padding:12px;}
+  .main{padding:16px;}
+  .preview-bar{left:0;}
+  .sound-grid{grid-template-columns:1fr;}
+}
+</style>
+  <!-- PWA -->
+  <link rel="manifest" href="/manifest.json">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <meta name="theme-color" content="#1565C0">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Sound Safari Admin">
+  <link rel="apple-touch-icon" href="/icons/icon-152x152.png">
+</head>
+<body>
+
+<div class="shell">
+
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="logo">⚙️ Admin Panel</div>
+  <a class="nav-item" href="speech-therapy-game.html" style="text-decoration:none;" title="Back to game">
+    <span class="nav-icon">🏠</span> Back to Game
+  </a>
+  <div style="height:1px;background:var(--border);margin:6px 0;"></div>
+  <button class="nav-item active" onclick="showTab('vehicles',this)">
+    <span class="nav-icon">🚗</span> Vehicles
+  </button>
+  <button class="nav-item" onclick="showTab('words',this)">
+    <span class="nav-icon">📝</span> Words &amp; Categories
+  </button>
+  <button class="nav-item" onclick="showTab('sounds',this)">
+    <span class="nav-icon">🔊</span> Sounds
+  </button>
+  <button class="nav-item" onclick="showTab('updates',this)">
+    <span class="nav-icon">📁</span> Updates
+    <span id="ver-badge" style="margin-left:auto;background:var(--accent2);color:#fff;font-size:10px;border-radius:10px;padding:1px 7px;"></span>
+  </button>
+  <div class="sidebar-footer">
+    <button class="save-all-btn" onclick="saveAll()">💾 Save &amp; Apply</button>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<main class="main">
+
+  <!-- ── VEHICLES TAB ── -->
+  <div id="tab-vehicles" class="tab-panel active">
+    <div class="page-hdr">
+      <h1>🚗 Vehicle Configuration</h1>
+      <p>Set emoji or image URL for each vehicle. The label is shown on the selection screen.</p>
+    </div>
+    <div class="stat-chips" id="vehicle-stats"></div>
+    <div id="vehicles-grid" class="vehicles-grid"></div>
+    <button class="add-cat-btn" style="margin-top:0" onclick="addVehicle()">＋ Add Vehicle</button>
+  </div>
+
+  <!-- ── WORDS TAB ── -->
+  <div id="tab-words" class="tab-panel">
+    <div class="page-hdr">
+      <h1>📝 Words &amp; Categories</h1>
+      <p>Edit words and their emoji. Each word needs a display emoji and a spoken label.</p>
+    </div>
+    <div class="stat-chips" id="word-stats"></div>
+    <div id="words-container"></div>
+    <button class="add-cat-btn" onclick="addCategory()">＋ Add Category</button>
+  </div>
+
+  <!-- ── SOUNDS TAB ── -->
+  <div id="tab-sounds" class="tab-panel">
+    <div class="page-hdr">
+      <h1>🔊 Sound Configuration</h1>
+      <p>Tune the Web Audio synthesizer for each sound event. Use "Test" to preview.</p>
+    </div>
+    <div class="sound-grid" id="sound-grid"></div>
+  </div>
+
+  <!-- ── UPDATES TAB ── -->
+  <div id="tab-updates" class="tab-panel">
+    <div class="page-hdr">
+      <h1>📁 Version History</h1>
+      <p>Every saved config is stored as a named version. Restore, compare, download or delete any version.</p>
+    </div>
+
+    <div style="display:flex;gap:10px;align-items:center;margin-bottom:20px;flex-wrap:wrap;">
+      <button class="btn-primary" onclick="saveVersion()">💾 Save New Version</button>
+      <button class="btn-secondary" onclick="downloadFolder()">📦 Download All as Folder</button>
+      <button class="btn-secondary" onclick="loadVersionFile()">⬆ Load Version File</button>
+      <div id="ver-count" style="margin-left:auto;font-size:13px;color:var(--muted);"></div>
+    </div>
+
+    <!-- Active version info -->
+    <div class="card" id="active-ver-card" style="border-color:var(--green);margin-bottom:20px;">
+      <div class="card-hdr">
+        <div class="card-title">✅ Currently Active Version</div>
+      </div>
+      <div id="active-ver-info" style="font-size:13px;color:var(--muted);">No version saved yet.</div>
+    </div>
+
+    <!-- Version list -->
+    <div id="version-list"></div>
+  </div>
+
+</main>
+</div>
+
+<!-- COMPARE PANEL -->
+<div id="compare-panel" class="hidden">
+  <div class="compare-box">
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <h2 style="font-size:18px;">🔍 Compare Versions</h2>
+      <button onclick="document.getElementById('compare-panel').classList.add('hidden')"
+              style="background:none;border:none;color:var(--muted);font-size:22px;cursor:pointer;">✕</button>
+    </div>
+    <div class="compare-grid" id="compare-grid"></div>
+  </div>
+</div>
+
+<!-- PREVIEW BAR -->
+<div class="preview-bar">
+  <div class="preview-info">
+    <strong id="pb-summary">Loading config…</strong>
+    <span id="pb-changes" style="margin-left:12px;color:var(--accent);font-size:12px;"></span>
+  </div>
+  <div class="action-row">
+    <a href="speech-therapy-game.html" class="btn-secondary" style="text-decoration:none;display:inline-flex;align-items:center;gap:6px;">🏠 Home</a>
+    <button class="btn-danger" onclick="resetDefaults()">↺ Reset Defaults</button>
+    <button class="btn-secondary" onclick="exportConfig()">⬇ Export JSON</button>
+    <button class="btn-secondary" onclick="importConfig()">⬆ Import JSON</button>
+    <button class="btn-primary" onclick="saveAll()">💾 Save &amp; Apply</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ════════════════════════════════════════════════════════
+//  DEFAULT CONFIG (mirrors game defaults)
+// ════════════════════════════════════════════════════════
+const DEFAULT_CONFIG = {
+  vehicles:[
+    {id:'car',  label:'Car',         emoji:'🚗', imgUrl:'', soundType:'car'},
+    {id:'tram', label:'Tram Engine', emoji:'🚋', imgUrl:'', soundType:'tram'},
+    {id:'truck',label:'Truck',       emoji:'🚛', imgUrl:'', soundType:'truck'},
+  ],
+  categories:{
+    Animals:{icon:'🐾', words:[
+      {e:'🐯',n:'TIGER'},{e:'🐢',n:'TURTLE'},{e:'🦌',n:'TAPIR'},{e:'🐠',n:'TUNA'},
+      {e:'🦖',n:'T-REX'},{e:'🦃',n:'TURKEY'},{e:'🦤',n:'TOUCAN'},{e:'🐊',n:'TOAD'},
+      {e:'🐋',n:'TUNA FISH'},{e:'🦂',n:'TARANTULA'},
+    ]},
+    Birds:{icon:'🐦', words:[
+      {e:'🦃',n:'TURKEY'},{e:'🦤',n:'TOUCAN'},{e:'🕊️',n:'TURTLEDOVE'},{e:'🦢',n:'TEAL'},
+      {e:'🐦',n:'THRUSH'},{e:'🦉',n:'TAWNY OWL'},{e:'🐧',n:'TERN'},{e:'🦜',n:'TANAGER'},
+      {e:'🦆',n:'TUFTED DUCK'},{e:'🐓',n:'TOM ROOSTER'},
+    ]},
+    Objects:{icon:'🎯', words:[
+      {e:'🚂',n:'TRAIN'},{e:'🎪',n:'TENT'},{e:'🧸',n:'TEDDY'},{e:'🎺',n:'TRUMPET'},
+      {e:'🏆',n:'TROPHY'},{e:'🔦',n:'TORCH'},{e:'🪣',n:'TUB'},{e:'🎯',n:'TARGET'},
+      {e:'🧵',n:'THREAD'},{e:'🚜',n:'TRACTOR'},
+    ]},
+    Fruits:{icon:'🍎', words:[
+      {e:'🍅',n:'TOMATO'},{e:'🍊',n:'TANGERINE'},{e:'🍑',n:'TAMARIND'},{e:'🥝',n:'TAMARILLO'},
+      {e:'🍈',n:'TANGELO'},{e:'🍒',n:'TART CHERRY'},{e:'🍓',n:'TROPICAL BERRY'},{e:'🥭',n:'THAI MANGO'},
+      {e:'🍍',n:'TROPICAL PINE'},{e:'🍌',n:'THAI BANANA'},
+    ]},
+    Vegetables:{icon:'🥦', words:[
+      {e:'🍅',n:'TOMATO'},{e:'🌽',n:'TASSLE CORN'},{e:'🧅',n:'TURNIP'},{e:'🥔',n:'TATER'},
+      {e:'🌿',n:'TARRAGON'},{e:'🥬',n:'TATSOI'},{e:'🍄',n:'TRUFFLE'},{e:'🌰',n:'TREE NUT'},
+      {e:'🥦',n:'TENDER STEM'},{e:'🥕',n:'TOP CARROT'},
+    ]},
+  },
+  sounds:{
+    chime:   {type:'tone', freq:523,  waveform:'sine',     duration:0.22, volume:0.28, rhythm:100},
+    fanfare: {type:'tone', freq:523,  waveform:'triangle', duration:0.22, volume:0.32, rhythm:120},
+    tick:    {type:'tone', freq:900,  waveform:'square',   duration:0.05, volume:0.18, rhythm:0},
+    engine_car:  {type:'engine', baseFreq:80,  waveform:'sawtooth', lfoRate:6,  volume:0.07},
+    engine_tram: {type:'engine', baseFreq:180, waveform:'sine',     lfoRate:0,  volume:0.05},
+    engine_truck:{type:'engine', baseFreq:45,  waveform:'sawtooth', lfoRate:0,  volume:0.09},
+  }
+};
+
+// ════════════════════════════════════════════════════════
+//  LOAD / SAVE
+// ════════════════════════════════════════════════════════
+let config = JSON.parse(JSON.stringify(DEFAULT_CONFIG));
+let hasChanges = false;
+
+function loadConfig(){
+  try{
+    const saved = localStorage.getItem('soundSafariAdminConfig');
+    if(saved) config = JSON.parse(saved);
+  } catch(e){ config = JSON.parse(JSON.stringify(DEFAULT_CONFIG)); }
+}
+
+function saveAll(){
+  // collect current state from DOM
+  collectVehicles();
+  collectWords();
+  collectSounds();
+  localStorage.setItem('soundSafariAdminConfig', JSON.stringify(config));
+  // also write the "live" game config key
+  localStorage.setItem('soundSafariConfig', JSON.stringify(config));
+  hasChanges = false;
+  updatePB();
+  showToast('✅ Saved! Config applied to game.');
+}
+
+function resetDefaults(){
+  if(!confirm('Reset everything to defaults? This cannot be undone.')) return;
+  config = JSON.parse(JSON.stringify(DEFAULT_CONFIG));
+  localStorage.removeItem('soundSafariAdminConfig');
+  localStorage.removeItem('soundSafariConfig');
+  renderAll();
+  showToast('↺ Reset to defaults');
+}
+
+function exportConfig(){
+  const blob = new Blob([JSON.stringify(config,null,2)],{type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'soundsafari-config.json';
+  a.click();
+}
+
+function importConfig(){
+  const inp = document.createElement('input');
+  inp.type='file'; inp.accept='.json';
+  inp.onchange = e=>{
+    const f = e.target.files[0]; if(!f) return;
+    const r = new FileReader();
+    r.onload = ev=>{
+      try{
+        config = JSON.parse(ev.target.result);
+        localStorage.setItem('soundSafariAdminConfig', JSON.stringify(config));
+        renderAll();
+        showToast('⬆ Config imported!');
+      } catch(err){ showToast('❌ Invalid JSON file','error'); }
+    };
+    r.readAsText(f);
+  };
+  inp.click();
+}
+
+// ════════════════════════════════════════════════════════
+//  TAB NAVIGATION
+// ════════════════════════════════════════════════════════
+function showTab(id, el){
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  el.classList.add('active');
+}
+
+// ════════════════════════════════════════════════════════
+//  VEHICLES
+// ════════════════════════════════════════════════════════
+function renderVehicles(){
+  const grid = document.getElementById('vehicles-grid');
+  grid.innerHTML = '';
+
+  config.vehicles.forEach((v,i)=>{
+    const isImg = !!v.imgUrl;
+    const div = document.createElement('div');
+    div.className='vehicle-card';
+    div.dataset.idx=i;
+    div.innerHTML=`
+      <div class="vc-header">
+        <div class="vehicle-preview ${isImg?'img-mode':''}" id="vprev-${i}" title="Click to preview">
+          ${isImg ? `<img src="${v.imgUrl}" onerror="this.parentElement.innerHTML='❓'">` : `<span>${v.emoji||'🚗'}</span>`}
+        </div>
+        <div>
+          <div class="vc-name" contenteditable="true" data-field="label" data-idx="${i}" 
+               onblur="updateVehicleField(${i},'label',this.textContent.trim())"
+               style="outline:none;border-bottom:1px solid var(--border);padding-bottom:2px;">${v.label}</div>
+          <div class="vc-type-badge">ID: ${v.id}</div>
+        </div>
+        <button onclick="removeVehicle(${i})" style="margin-left:auto;background:none;border:none;color:var(--muted);cursor:pointer;font-size:18px;" title="Remove">✕</button>
+      </div>
+
+      <div class="field-group">
+        <div class="field-label">Display Type</div>
+        <div style="display:flex;gap:6px;">
+          <button class="toggle-btn ${!isImg?'active':''}" onclick="setVehicleMode(${i},'emoji')">Emoji</button>
+          <button class="toggle-btn ${isImg?'active':''}" onclick="setVehicleMode(${i},'url')">Image URL</button>
+        </div>
+      </div>
+
+      <div class="field-group" id="emoji-group-${i}" style="${isImg?'display:none':''}">
+        <div class="field-label">Emoji</div>
+        <input class="inp emoji-inp" value="${v.emoji||'🚗'}" 
+               oninput="updateVehicleField(${i},'emoji',this.value);updateVehiclePreview(${i})">
+      </div>
+
+      <div class="field-group" id="url-group-${i}" style="${isImg?'':'display:none'}">
+        <div class="field-label">Image URL</div>
+        <input class="inp" placeholder="https://example.com/car.png" value="${v.imgUrl||''}"
+               oninput="updateVehicleField(${i},'imgUrl',this.value);updateVehiclePreview(${i})">
+      </div>
+
+      <div class="field-group">
+        <div class="field-label">Drive Sound</div>
+        <select class="inp" onchange="updateVehicleField(${i},'soundType',this.value)">
+          <option value="car" ${v.soundType==='car'?'selected':''}>🚗 Car Purr</option>
+          <option value="tram" ${v.soundType==='tram'?'selected':''}>🚋 Tram Electric</option>
+          <option value="truck" ${v.soundType==='truck'?'selected':''}>🚛 Truck Diesel</option>
+          <option value="custom" ${v.soundType==='custom'?'selected':''}>🎵 Custom Tone</option>
+          <option value="silent" ${v.soundType==='silent'?'selected':''}>🔇 Silent</option>
+        </select>
+      </div>`;
+    grid.appendChild(div);
+  });
+
+  // stats
+  document.getElementById('vehicle-stats').innerHTML = `
+    <div class="stat-chip"><div class="stat-val">${config.vehicles.length}</div><div class="stat-lbl">Vehicles</div></div>`;
+}
+
+function updateVehicleField(i, field, val){
+  config.vehicles[i][field] = val;
+  markChanged();
+}
+
+function updateVehiclePreview(i){
+  const v = config.vehicles[i];
+  const prev = document.getElementById(`vprev-${i}`);
+  if(v.imgUrl){
+    prev.className='vehicle-preview img-mode';
+    prev.innerHTML=`<img src="${v.imgUrl}" onerror="this.parentElement.innerHTML='❓'">`;
+  } else {
+    prev.className='vehicle-preview';
+    prev.innerHTML=`<span>${v.emoji||'🚗'}</span>`;
+  }
+}
+
+function setVehicleMode(i, mode){
+  const v = config.vehicles[i];
+  if(mode==='emoji'){
+    v.imgUrl='';
+    document.getElementById(`emoji-group-${i}`).style.display='';
+    document.getElementById(`url-group-${i}`).style.display='none';
+  } else {
+    document.getElementById(`emoji-group-${i}`).style.display='none';
+    document.getElementById(`url-group-${i}`).style.display='';
+  }
+  updateVehiclePreview(i);
+  renderVehicles();
+  markChanged();
+}
+
+function addVehicle(){
+  const id='vehicle'+Date.now();
+  config.vehicles.push({id,label:'New Vehicle',emoji:'🚌',imgUrl:'',soundType:'car'});
+  renderVehicles();
+  markChanged();
+}
+
+function removeVehicle(i){
+  if(config.vehicles.length<=1){ showToast('Need at least 1 vehicle','error'); return; }
+  config.vehicles.splice(i,1);
+  renderVehicles();
+  markChanged();
+}
+
+function collectVehicles(){
+  // Data is already kept live in config.vehicles via oninput handlers
+}
+
+// ════════════════════════════════════════════════════════
+//  WORDS
+// ════════════════════════════════════════════════════════
+function renderWords(){
+  const container = document.getElementById('words-container');
+  container.innerHTML='';
+  let totalWords=0;
+
+  for(const [catName, catData] of Object.entries(config.categories)){
+    totalWords += catData.words.length;
+    const block = document.createElement('div');
+    block.className='card cat-block';
+
+    const wordsHtml = catData.words.map((w,wi)=>`
+      <div class="word-row" data-cat="${catName}" data-wi="${wi}">
+        <input class="inp emoji-inp word-emoji" value="${w.e}" 
+               oninput="updateWord('${catName}',${wi},'e',this.value)" title="Emoji (or image URL)">
+        <input class="word-text-inp inp" value="${w.n}" 
+               oninput="updateWord('${catName}',${wi},'n',this.value.toUpperCase())" style="text-transform:uppercase">
+        <button class="word-del" onclick="removeWord('${catName}',${wi})" title="Remove">✕</button>
+      </div>`).join('');
+
+    block.innerHTML=`
+      <div class="card-hdr">
+        <div class="cat-label">
+          <input class="inp cat-icon-inp" value="${catData.icon}" 
+                 oninput="updateCatIcon('${catName}',this.value)" title="Category icon" style="width:46px">
+          <span contenteditable="true"
+                onblur="renameCategory('${catName}',this.textContent.trim())"
+                style="outline:none;border-bottom:1px dashed var(--border);cursor:text;">${catName}</span>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <span class="badge">${catData.words.length} words</span>
+          <button onclick="removeCategory('${catName}')" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px;" title="Delete category">🗑</button>
+        </div>
+      </div>
+      <div class="words-grid" id="words-${catName}">${wordsHtml}</div>
+      <button class="add-word-btn" onclick="addWord('${catName}')" style="margin-top:10px;">＋ Add Word</button>`;
+    container.appendChild(block);
+  }
+
+  // stats
+  document.getElementById('word-stats').innerHTML=`
+    <div class="stat-chip"><div class="stat-val">${Object.keys(config.categories).length}</div><div class="stat-lbl">Categories</div></div>
+    <div class="stat-chip"><div class="stat-val">${totalWords}</div><div class="stat-lbl">Total Words</div></div>`;
+}
+
+function updateWord(cat,wi,field,val){
+  config.categories[cat].words[wi][field]=val;
+  markChanged();
+}
+
+function updateCatIcon(cat,val){
+  config.categories[cat].icon=val;
+  markChanged();
+}
+
+function addWord(cat){
+  config.categories[cat].words.push({e:'📌',n:'NEW WORD'});
+  renderWords();
+  markChanged();
+  // scroll to last word
+  const grid=document.getElementById('words-'+cat);
+  if(grid) grid.lastElementChild?.previousElementSibling?.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+function removeWord(cat,wi){
+  config.categories[cat].words.splice(wi,1);
+  renderWords();
+  markChanged();
+}
+
+function addCategory(){
+  const name=prompt('New category name:','NewCategory');
+  if(!name) return;
+  if(config.categories[name]){ showToast('Category already exists','error'); return; }
+  config.categories[name]={icon:'📂',words:[]};
+  renderWords();
+  markChanged();
+}
+
+function removeCategory(cat){
+  if(!confirm(`Delete category "${cat}" and all its words?`)) return;
+  delete config.categories[cat];
+  renderWords();
+  markChanged();
+}
+
+function renameCategory(oldName, newName){
+  if(!newName || newName===oldName) return;
+  if(config.categories[newName]){ showToast('Name taken','error'); return; }
+  const data=config.categories[oldName];
+  delete config.categories[oldName];
+  config.categories[newName]=data;
+  renderWords();
+  markChanged();
+}
+
+function collectWords(){
+  // Data is kept live via oninput handlers
+}
+
+// ════════════════════════════════════════════════════════
+//  SOUNDS
+// ════════════════════════════════════════════════════════
+const SOUND_DEFS = [
+  {key:'chime',   label:'Tap Chime',        icon:'🎵', desc:'When child taps the card'},
+  {key:'fanfare', label:'Celebration',       icon:'🎊', desc:'After correct tap'},
+  {key:'tick',    label:'Button Click',      icon:'🔔', desc:'UI button press'},
+  {key:'engine_car',   label:'Car Engine',   icon:'🚗', desc:'While car drives'},
+  {key:'engine_tram',  label:'Tram Sound',   icon:'🚋', desc:'While tram drives'},
+  {key:'engine_truck', label:'Truck Engine', icon:'🚛', desc:'While truck drives'},
+];
+
+const WAVEFORMS=['sine','square','sawtooth','triangle'];
+
+function renderSounds(){
+  const grid=document.getElementById('sound-grid');
+  grid.innerHTML='';
+  SOUND_DEFS.forEach(def=>{
+    const s=config.sounds[def.key]||{};
+    const card=document.createElement('div');
+    card.className='sound-card';
+
+    const isEngine=def.key.startsWith('engine');
+    card.innerHTML=`
+      <div class="sound-card-hdr">
+        <div>
+          <div class="sound-name">${def.icon} ${def.label}</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:2px;">${def.desc}</div>
+        </div>
+      </div>
+      <div class="sound-params">
+        <div class="param-row">
+          <span class="param-label">Waveform</span>
+          <select class="inp" style="flex:1;padding:5px 8px;font-size:12px;" 
+                  onchange="updateSound('${def.key}','waveform',this.value)">
+            ${WAVEFORMS.map(w=>`<option ${(s.waveform||'sine')===w?'selected':''}>${w}</option>`).join('')}
+          </select>
+        </div>
+        <div class="param-row">
+          <span class="param-label">${isEngine?'Base Freq':'Frequency'}</span>
+          <input type="range" min="${isEngine?20:200}" max="${isEngine?400:2000}" step="1"
+                 value="${s.freq||s.baseFreq||440}"
+                 oninput="updateSound('${def.key}','${isEngine?'baseFreq':'freq'}',+this.value);this.nextElementSibling.textContent=this.value+'Hz'">
+          <span class="param-val">${s.freq||s.baseFreq||440}Hz</span>
+        </div>
+        <div class="param-row">
+          <span class="param-label">Volume</span>
+          <input type="range" min="0" max="0.5" step="0.01"
+                 value="${s.volume||0.25}"
+                 oninput="updateSound('${def.key}','volume',+this.value);this.nextElementSibling.textContent=Math.round(this.value*200)+'%'">
+          <span class="param-val">${Math.round((s.volume||0.25)*200)}%</span>
+        </div>
+        ${!isEngine?`
+        <div class="param-row">
+          <span class="param-label">Duration</span>
+          <input type="range" min="0.05" max="0.8" step="0.01"
+                 value="${s.duration||0.2}"
+                 oninput="updateSound('${def.key}','duration',+this.value);this.nextElementSibling.textContent=(+this.value*1000).toFixed(0)+'ms'">
+          <span class="param-val">${Math.round((s.duration||0.2)*1000)}ms</span>
+        </div>`:''}
+        ${isEngine?`
+        <div class="param-row">
+          <span class="param-label">LFO Rate</span>
+          <input type="range" min="0" max="20" step="0.5"
+                 value="${s.lfoRate||0}"
+                 oninput="updateSound('${def.key}','lfoRate',+this.value);this.nextElementSibling.textContent=this.value+'Hz'">
+          <span class="param-val">${s.lfoRate||0}Hz</span>
+        </div>`:''}
+        <div class="param-row">
+          <span class="param-label">URL</span>
+          <input class="inp" placeholder="Optional: https://…/sound.mp3 (overrides synth)" 
+                 value="${s.url||''}" style="font-size:11px;"
+                 oninput="updateSound('${def.key}','url',this.value)">
+        </div>
+      </div>
+      <button class="test-btn" onclick="testSound('${def.key}')">▶ Test Sound</button>`;
+    grid.appendChild(card);
+  });
+}
+
+function updateSound(key,field,val){
+  if(!config.sounds[key]) config.sounds[key]={};
+  config.sounds[key][field]=val;
+  markChanged();
+}
+
+function collectSounds(){
+  // Kept live via oninput
+}
+
+// ════════════════════════════════════════════════════════
+//  AUDIO TEST (Web Audio API)
+// ════════════════════════════════════════════════════════
+let AC=null;
+function getAC(){
+  if(!AC) AC=new(window.AudioContext||window.webkitAudioContext)();
+  if(AC.state==='suspended') AC.resume();
+  return AC;
+}
+
+function playTone(freq,type,duration,vol,delay=0){
+  try{
+    const ac=getAC();
+    const osc=ac.createOscillator();
+    const gain=ac.createGain();
+    osc.connect(gain); gain.connect(ac.destination);
+    osc.type=type; osc.frequency.value=freq;
+    const t=ac.currentTime+delay;
+    gain.gain.setValueAtTime(vol,t);
+    gain.gain.exponentialRampToValueAtTime(0.001,t+duration);
+    osc.start(t); osc.stop(t+duration+0.02);
+  } catch(e){}
+}
+
+function testSound(key){
+  const s=config.sounds[key];
+  if(!s) return;
+
+  // If URL provided, play that
+  if(s.url){
+    try{ new Audio(s.url).play(); return; } catch(e){}
+  }
+
+  if(key==='chime'){
+    const notes=[s.freq||523, (s.freq||523)*1.25, (s.freq||523)*1.5, (s.freq||523)*2];
+    notes.forEach((f,i)=>playTone(f, s.waveform||'sine', s.duration||0.22, s.volume||0.28, i*0.1));
+  } else if(key==='fanfare'){
+    const notes=[1,1.25,1.5,2,1.5,2].map(m=>(s.freq||523)*m);
+    notes.forEach((f,i)=>playTone(f, s.waveform||'triangle', s.duration||0.22, s.volume||0.32, i*0.12));
+  } else if(key==='tick'){
+    playTone(s.freq||900, s.waveform||'square', s.duration||0.05, s.volume||0.18);
+  } else if(key.startsWith('engine')){
+    // play engine tone for 0.8s
+    const ac=getAC();
+    const osc=ac.createOscillator();
+    const gain=ac.createGain();
+    osc.connect(gain); gain.connect(ac.destination);
+    osc.type=s.waveform||'sawtooth';
+    osc.frequency.value=s.baseFreq||80;
+    gain.gain.value=s.volume||0.07;
+    if(s.lfoRate>0){
+      const lfo=ac.createOscillator();
+      const lfoG=ac.createGain();
+      lfo.frequency.value=s.lfoRate;
+      lfoG.gain.value=12;
+      lfo.connect(lfoG); lfoG.connect(osc.frequency);
+      lfo.start(); lfo.stop(ac.currentTime+0.8);
+    }
+    osc.start(); gain.gain.exponentialRampToValueAtTime(0.001,ac.currentTime+0.8);
+    osc.stop(ac.currentTime+0.82);
+  }
+}
+
+// ════════════════════════════════════════════════════════
+//  PREVIEW BAR
+// ════════════════════════════════════════════════════════
+function updatePB(){
+  const cats=Object.keys(config.categories).length;
+  const words=Object.values(config.categories).reduce((s,c)=>s+c.words.length,0);
+  document.getElementById('pb-summary').textContent=
+    `${config.vehicles.length} vehicles · ${cats} categories · ${words} words`;
+  document.getElementById('pb-changes').textContent=hasChanges?'● Unsaved changes':'';
+}
+
+function markChanged(){
+  hasChanges=true;
+  updatePB();
+}
+
+// ════════════════════════════════════════════════════════
+//  TOAST
+// ════════════════════════════════════════════════════════
+let toastTimer=null;
+function showToast(msg,type='success'){
+  const t=document.getElementById('toast');
+  t.textContent=msg;
+  t.className='toast '+(type==='error'?'error':'')+' show';
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>t.classList.remove('show'),2600);
+}
+
+// ════════════════════════════════════════════════════════
+//  VERSION / UPDATES SYSTEM
+// ════════════════════════════════════════════════════════
+// Storage keys
+const VER_LIST_KEY   = 'soundSafari_versions';      // [{id,name,ts,activeId,snapshot}]
+const ACTIVE_VER_KEY = 'soundSafari_activeVersion';  // id of active version
+
+function getVersions(){
+  try{ return JSON.parse(localStorage.getItem(VER_LIST_KEY)||'[]'); }
+  catch(e){ return []; }
+}
+function saveVersions(list){ localStorage.setItem(VER_LIST_KEY, JSON.stringify(list)); }
+function getActiveId(){ return localStorage.getItem(ACTIVE_VER_KEY)||null; }
+function setActiveId(id){ localStorage.setItem(ACTIVE_VER_KEY, id); }
+
+// ── Save current config as a new named version ────────
+function saveVersion(nameOverride){
+  collectVehicles(); collectWords(); collectSounds();
+
+  const versions = getVersions();
+  const vNum     = versions.length + 1;
+  const ts       = new Date().toISOString();
+  const id       = 'v_'+Date.now();
+  const cats     = Object.keys(config.categories||{}).length;
+  const words    = Object.values(config.categories||{})
+                         .reduce((s,c)=>s+(Array.isArray(c)?c.length:(c.words||[]).length),0);
+
+  const defaultName = nameOverride || `Version ${vNum} — ${new Date().toLocaleString('en-GB',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'})}`;
+  const name = prompt('Name this version:', defaultName);
+  if(name === null) return; // cancelled
+
+  const entry = {
+    id,
+    name: name||defaultName,
+    ts,
+    stats:{ vehicles: config.vehicles.length, cats, words },
+    snapshot: JSON.parse(JSON.stringify(config))
+  };
+
+  versions.push(entry);
+  saveVersions(versions);
+
+  // Also activate it and apply to game
+  setActiveId(id);
+  localStorage.setItem('soundSafariAdminConfig', JSON.stringify(config));
+  localStorage.setItem('soundSafariConfig', JSON.stringify(config));
+
+  hasChanges = false;
+  updatePB();
+  renderVersions();
+  showToast(`✅ Saved as "${entry.name}"`);
+}
+
+// ── Save silently (called from saveAll) ───────────────
+function saveAll(){
+  collectVehicles(); collectWords(); collectSounds();
+
+  const versions  = getVersions();
+  const activeId  = getActiveId();
+  const existing  = versions.find(v=>v.id===activeId);
+
+  // If no active version yet, create one automatically
+  if(!existing){
+    const id  = 'v_'+Date.now();
+    const ts  = new Date().toISOString();
+    const cats= Object.keys(config.categories||{}).length;
+    const words=Object.values(config.categories||{})
+                      .reduce((s,c)=>s+(Array.isArray(c)?c.length:(c.words||[]).length),0);
+    const entry={
+      id,
+      name:`Version 1 — Auto-save ${new Date().toLocaleString('en-GB',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'})}`,
+      ts,
+      stats:{vehicles:config.vehicles.length,cats,words},
+      snapshot:JSON.parse(JSON.stringify(config))
+    };
+    versions.push(entry);
+    saveVersions(versions);
+    setActiveId(id);
+  } else {
+    // Update the existing active version's snapshot silently
+    existing.snapshot = JSON.parse(JSON.stringify(config));
+    existing.ts       = new Date().toISOString();
+    const cats= Object.keys(config.categories||{}).length;
+    const words=Object.values(config.categories||{})
+                      .reduce((s,c)=>s+(Array.isArray(c)?c.length:(c.words||[]).length),0);
+    existing.stats={vehicles:config.vehicles.length,cats,words};
+    saveVersions(versions);
+  }
+
+  localStorage.setItem('soundSafariAdminConfig', JSON.stringify(config));
+  localStorage.setItem('soundSafariConfig', JSON.stringify(config));
+  hasChanges = false;
+  updatePB();
+  renderVersions();
+  showToast('✅ Saved! Config applied to game.');
+}
+
+// ── Restore a version into the editor ────────────────
+function restoreVersion(id){
+  const versions = getVersions();
+  const v = versions.find(v=>v.id===id);
+  if(!v) return;
+  if(!confirm(`Load "${v.name}" into editor? Unsaved changes will be lost.`)) return;
+  config = JSON.parse(JSON.stringify(v.snapshot));
+  renderAll();
+  renderVersions();
+  showToast(`↩ Loaded "${v.name}"`);
+}
+
+// ── Activate a version (make it the live game config) ─
+function activateVersion(id){
+  const versions = getVersions();
+  const v = versions.find(v=>v.id===id);
+  if(!v) return;
+  setActiveId(id);
+  config = JSON.parse(JSON.stringify(v.snapshot));
+  localStorage.setItem('soundSafariConfig', JSON.stringify(config));
+  localStorage.setItem('soundSafariAdminConfig', JSON.stringify(config));
+  renderAll();
+  renderVersions();
+  showToast(`✅ "${v.name}" is now live!`);
+}
+
+// ── Rename a version ──────────────────────────────────
+function renameVersion(id, newName){
+  const versions = getVersions();
+  const v = versions.find(v=>v.id===id);
+  if(!v||!newName.trim()) return;
+  v.name = newName.trim();
+  saveVersions(versions);
+  updatePB();
+}
+
+// ── Delete a version ──────────────────────────────────
+function deleteVersion(id){
+  const versions = getVersions();
+  const v = versions.find(v=>v.id===id);
+  if(!v) return;
+  if(!confirm(`Delete "${v.name}"? This cannot be undone.`)) return;
+  const newList = versions.filter(v=>v.id!==id);
+  saveVersions(newList);
+  if(getActiveId()===id){
+    // Activate the latest remaining version
+    const latest = newList[newList.length-1];
+    if(latest){ setActiveId(latest.id); }
+    else { localStorage.removeItem(ACTIVE_VER_KEY); }
+  }
+  renderVersions();
+  showToast(`🗑 Deleted "${v.name}"`);
+}
+
+// ── Download single version as JSON ──────────────────
+function downloadVersion(id){
+  const versions = getVersions();
+  const v = versions.find(v=>v.id===id);
+  if(!v) return;
+  const safeName = v.name.replace(/[^a-z0-9_\-]/gi,'_').toLowerCase();
+  const payload = { ...v, exportedAt: new Date().toISOString() };
+  const blob = new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=`soundsafari_${safeName}_${id.replace('v_','')}.json`;
+  a.click();
+  showToast(`⬇ Downloaded "${v.name}"`);
+}
+
+// ── Download ALL versions as a folder (multi-file) ───
+// Since browsers can't create real folders, we download each file
+// with a numeric prefix and open them one by one, or create a manifest
+function downloadFolder(){
+  const versions = getVersions();
+  if(!versions.length){ showToast('No versions to download','error'); return; }
+
+  if(!confirm(`Download all ${versions.length} version(s) as individual JSON files?\n\nThey will be saved to your Downloads folder. Create a local folder named "soundsafari-updates" and move them there.`)) return;
+
+  // Download each version with a small delay between downloads
+  versions.forEach((v,i)=>{
+    setTimeout(()=>{
+      const safeName = v.name.replace(/[^a-z0-9_\-]/gi,'_').toLowerCase().slice(0,40);
+      const blob = new Blob([JSON.stringify(v,null,2)],{type:'application/json'});
+      const a=document.createElement('a');
+      a.href=URL.createObjectURL(blob);
+      a.download=`soundsafari-updates/${String(i+1).padStart(3,'0')}_${safeName}.json`;
+      a.click();
+    }, i * 400);
+  });
+
+  // Also download a manifest
+  setTimeout(()=>{
+    const manifest = {
+      name:'Sound Safari — Config Update Folder',
+      exportedAt: new Date().toISOString(),
+      activeVersionId: getActiveId(),
+      totalVersions: versions.length,
+      versions: versions.map(v=>({id:v.id,name:v.name,ts:v.ts,stats:v.stats}))
+    };
+    const blob=new Blob([JSON.stringify(manifest,null,2)],{type:'application/json'});
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(blob);
+    a.download=`soundsafari-updates/00_MANIFEST.json`;
+    a.click();
+    showToast(`📦 Downloaded ${versions.length} files + manifest`);
+  }, versions.length * 400 + 200);
+}
+
+// ── Load a version from a downloaded file ────────────
+function loadVersionFile(){
+  const inp=document.createElement('input');
+  inp.type='file'; inp.accept='.json'; inp.multiple=true;
+  inp.onchange=e=>{
+    const files=[...e.target.files];
+    let loaded=0, skipped=0;
+    const versions=getVersions();
+    const existingIds=new Set(versions.map(v=>v.id));
+
+    files.forEach(f=>{
+      const r=new FileReader();
+      r.onload=ev=>{
+        try{
+          const data=JSON.parse(ev.target.result);
+          // Skip manifests
+          if(!data.snapshot){ skipped++; checkDone(); return; }
+          // Skip duplicates
+          if(existingIds.has(data.id)){ skipped++; checkDone(); return; }
+          versions.push(data);
+          loaded++;
+          existingIds.add(data.id);
+        } catch(err){ skipped++; }
+        checkDone();
+      };
+      r.readAsText(f);
+    });
+
+    function checkDone(){
+      if(loaded+skipped < files.length) return;
+      // Sort by timestamp
+      versions.sort((a,b)=>new Date(a.ts)-new Date(b.ts));
+      saveVersions(versions);
+      renderVersions();
+      showToast(`⬆ Loaded ${loaded} version(s)${skipped?`, skipped ${skipped}`:''}`)
+    }
+  };
+  inp.click();
+}
+
+// ── Compare two versions side by side ────────────────
+function compareVersions(idA, idB){
+  const versions=getVersions();
+  const a=versions.find(v=>v.id===idA);
+  const b=versions.find(v=>v.id===idB);
+  if(!a||!b) return;
+
+  function diffSummary(va, vb){
+    const lines=[];
+    // Vehicles
+    const vehA=va.snapshot.vehicles.map(v=>v.label).sort();
+    const vehB=vb.snapshot.vehicles.map(v=>v.label).sort();
+    const addedV=vehB.filter(x=>!vehA.includes(x));
+    const removedV=vehA.filter(x=>!vehB.includes(x));
+    addedV.forEach(x=>lines.push({t:'add',text:`+ Vehicle: ${x}`}));
+    removedV.forEach(x=>lines.push({t:'rem',text:`- Vehicle: ${x}`}));
+    // Words
+    const wordsA=new Set();const wordsB=new Set();
+    Object.values(va.snapshot.categories||{}).forEach(c=>{
+      (Array.isArray(c)?c:c.words||[]).forEach(w=>wordsA.add(w.n));
+    });
+    Object.values(vb.snapshot.categories||{}).forEach(c=>{
+      (Array.isArray(c)?c:c.words||[]).forEach(w=>wordsB.add(w.n));
+    });
+    [...wordsB].filter(x=>!wordsA.has(x)).forEach(x=>lines.push({t:'add',text:`+ Word: ${x}`}));
+    [...wordsA].filter(x=>!wordsB.has(x)).forEach(x=>lines.push({t:'rem',text:`- Word: ${x}`}));
+    if(!lines.length) lines.push({t:'same',text:'No differences found.'});
+    return lines;
+  }
+
+  const diffs=diffSummary(a,b);
+  const grid=document.getElementById('compare-grid');
+  grid.innerHTML=`
+    <div class="compare-col">
+      <h3>📌 ${a.name}</h3>
+      <div style="font-size:11px;color:var(--muted);margin-bottom:8px;">${new Date(a.ts).toLocaleString()}</div>
+      <div>🚗 ${a.stats?.vehicles||0} vehicles · 📝 ${a.stats?.words||0} words</div>
+    </div>
+    <div class="compare-col">
+      <h3>📌 ${b.name}</h3>
+      <div style="font-size:11px;color:var(--muted);margin-bottom:8px;">${new Date(b.ts).toLocaleString()}</div>
+      <div>🚗 ${b.stats?.vehicles||0} vehicles · 📝 ${b.stats?.words||0} words</div>
+    </div>
+    <div class="compare-col" style="grid-column:1/-1;">
+      <h3>📊 Differences (${a.name} → ${b.name})</h3>
+      ${diffs.map(d=>`<div class="diff-line diff-${d.t}">${d.text}</div>`).join('')}
+    </div>`;
+  document.getElementById('compare-panel').classList.remove('hidden');
+}
+
+// ── Render the version list ───────────────────────────
+function renderVersions(){
+  const versions = getVersions();
+  const activeId  = getActiveId();
+  const list       = document.getElementById('version-list');
+  const badge      = document.getElementById('ver-badge');
+  const count      = document.getElementById('ver-count');
+  const activeInfo = document.getElementById('active-ver-info');
+
+  badge.textContent  = versions.length||'';
+  count.textContent  = `${versions.length} version${versions.length!==1?'s':''}`;
+
+  const activeVer = versions.find(v=>v.id===activeId);
+  activeInfo.innerHTML = activeVer
+    ? `<strong>${activeVer.name}</strong><br>
+       <span style="color:var(--muted);font-size:11px;">Saved ${new Date(activeVer.ts).toLocaleString()} · 
+       🚗 ${activeVer.stats?.vehicles||0} vehicles · 📝 ${activeVer.stats?.words||0} words</span>`
+    : 'No active version. Click <b>Save &amp; Apply</b> to create one.';
+
+  if(!versions.length){
+    list.innerHTML=`<div class="empty-state">
+      <div class="es-icon">📁</div>
+      <div>No versions saved yet.</div>
+      <div style="font-size:13px;margin-top:6px;">Click <b>Save New Version</b> to create your first snapshot.</div>
+    </div>`;
+    return;
+  }
+
+  // Show newest first
+  const sorted = [...versions].reverse();
+  list.innerHTML = sorted.map((v,i)=>{
+    const isActive = v.id===activeId;
+    const canCompare = sorted.length>1;
+    // Find previous version for comparison
+    const prevIdx = versions.indexOf(v)-1;
+    const prevId = prevIdx>=0 ? versions[prevIdx].id : null;
+    return `
+    <div class="ver-item ${isActive?'is-active':''}" id="ver-${v.id}">
+      <div class="ver-num">#${versions.indexOf(v)+1}</div>
+      <div class="ver-info">
+        <div class="ver-name">
+          <input class="ver-name-inp" value="${v.name.replace(/"/g,'&quot;')}"
+                 onblur="renameVersion('${v.id}',this.value)"
+                 onkeydown="if(event.key==='Enter')this.blur()">
+          ${isActive?'<span class="active-chip">● LIVE</span>':''}
+          ${prevId&&!isActive?`<span class="diff-badge" style="cursor:pointer" onclick="compareVersions('${prevId}','${v.id}')">Δ diff</span>`:''}
+        </div>
+        <div class="ver-meta">🕐 ${new Date(v.ts).toLocaleString('en-GB',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'})}</div>
+        <div class="ver-stats">🚗 ${v.stats?.vehicles||0} vehicles · 📁 ${v.stats?.cats||0} categories · 📝 ${v.stats?.words||0} words</div>
+      </div>
+      <div class="ver-actions">
+        <button class="ver-btn load" onclick="restoreVersion('${v.id}')">↩ Load</button>
+        ${!isActive?`<button class="ver-btn activate" onclick="activateVersion('${v.id}')">✅ Activate</button>`:''}
+        <button class="ver-btn dl" onclick="downloadVersion('${v.id}')">⬇ File</button>
+        ${canCompare&&sorted[i+1]?`<button class="ver-btn" style="border-color:var(--accent2);color:var(--accent2)" onclick="compareVersions('${v.id}','${sorted[i+1]?sorted[i+1].id:''}')">🔍</button>`:''}
+        <button class="ver-btn del" onclick="deleteVersion('${v.id}')">🗑</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── Override updatePB to include version info ─────────
+const _origUpdatePB = updatePB;
+function updatePB(){
+  const cats=Object.keys(config.categories).length;
+  const words=Object.values(config.categories).reduce((s,c)=>{
+    return s+(Array.isArray(c)?c.length:(c.words||[]).length);
+  },0);
+  document.getElementById('pb-summary').textContent=
+    `${config.vehicles.length} vehicles · ${cats} categories · ${words} words`;
+  document.getElementById('pb-changes').textContent=hasChanges?'● Unsaved changes':'';
+  const versions=getVersions();
+  const vBadge=document.getElementById('ver-badge');
+  if(vBadge) vBadge.textContent=versions.length||'';
+}
+
+
+
+// ════════════════════════════════════════════════════════
+//  INIT
+// ════════════════════════════════════════════════════════
+function renderAll(){
+  renderVehicles();
+  renderWords();
+  renderSounds();
+  renderVersions();
+  updatePB();
+}
+
+loadConfig();
+renderAll();
+
+</script>
+<script>
+if('serviceWorker' in navigator){
+  window.addEventListener('load', ()=>{
+    navigator.serviceWorker.register('/service-worker.js')
+      .then(r=> console.log('[SW] Registered:', r.scope))
+      .catch(e=> console.warn('[SW] Registration failed:', e));
+  });
+}
+</script>
+</body>
+</html>
