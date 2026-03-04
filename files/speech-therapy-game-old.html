@@ -127,196 +127,17 @@ canvas#gc{width:100%;height:auto;display:block;border-radius:14px;box-shadow:0 8
 .lr-cell{background:rgba(255,255,255,.22);border-radius:10px;padding:8px 4px;}
 .lr-val{font-size:22px;color:#fff;}
 .lr-lbl{font-family:'Nunito',sans-serif;font-size:10px;color:#FFF9C4;margin-top:2px;}
-
-/* ══ MENTOR ZONE ══════════════════════════════════════════ */
-#mentor-zone{
-  width:100%;max-width:900px;
-  background:rgba(10,14,30,.82);
-  border-top:2px solid rgba(99,132,255,.35);
-  border-radius:0 0 16px 16px;
-  padding:10px 18px 12px;
-  display:flex;align-items:center;justify-content:space-between;gap:12px;
-  backdrop-filter:blur(6px);
-}
-#mentor-zone.hidden{display:none;}
-.mz-label{
-  font-family:'Nunito',sans-serif;font-weight:900;
-  font-size:11px;letter-spacing:1.5px;color:rgba(160,180,255,.5);
-  text-transform:uppercase;flex-shrink:0;
-}
-.mz-status{
-  font-family:'Nunito',sans-serif;font-weight:700;
-  font-size:13px;color:rgba(160,180,255,.6);
-  flex:1;text-align:center;
-}
-.mz-btns{display:flex;gap:10px;align-items:center;}
-
-/* Replay button */
-#btn-replay{
-  font-family:'Fredoka One',cursive;font-size:15px;
-  background:rgba(66,133,244,.18);border:2px solid rgba(66,133,244,.4);
-  color:#7ab4ff;border-radius:12px;padding:8px 18px;
-  cursor:pointer;transition:all .15s;
-  display:flex;align-items:center;gap:6px;
-}
-#btn-replay:hover{background:rgba(66,133,244,.32);border-color:#4285f4;}
-#btn-replay:active{transform:translateY(2px);}
-#btn-replay.hidden{display:none!important;}
-
-/* Well Done button */
-#btn-welldonе{display:none;}
-#btn-welldone{
-  font-family:'Fredoka One',cursive;font-size:18px;
-  background:linear-gradient(135deg,#FFD700,#FF8C00);
-  color:#fff;border:none;border-radius:14px;
-  padding:10px 26px;cursor:pointer;
-  box-shadow:0 5px 0 #B8590A, 0 0 20px rgba(255,180,0,.4);
-  transition:all .15s;
-  display:flex;align-items:center;gap:8px;
-  animation:pulse-wd 1.8s ease-in-out infinite;
-}
-@keyframes pulse-wd{
-  0%,100%{box-shadow:0 5px 0 #B8590A, 0 0 20px rgba(255,180,0,.4);}
-  50%{box-shadow:0 5px 0 #B8590A, 0 0 36px rgba(255,180,0,.75);}
-}
-#btn-welldone:hover{transform:translateY(-2px);box-shadow:0 7px 0 #B8590A, 0 0 30px rgba(255,180,0,.6);}
-#btn-welldone:active{transform:translateY(3px);box-shadow:0 2px 0 #B8590A;}
-#btn-welldone.hidden{display:none!important;}
-
-/* session counter inside mentor zone */
-.mz-counter{
-  font-family:'Nunito',sans-serif;font-weight:900;
-  font-size:13px;color:rgba(160,180,255,.55);flex-shrink:0;
-}
-
-/* ══ CELEBRATION UPGRADE ═══════════════════════════════════ */
-.celeb-box{position:relative;overflow:hidden;}
-.celeb-word-banner{
-  font-family:'Nunito',sans-serif;font-weight:900;
-  font-size:16px;color:#4CAF50;margin-top:6px;
-  letter-spacing:.5px;
-}
-
-/* ══ FINISH LINE drawn on canvas — no extra HTML needed ═══ */
-
-/* ══ FUNFAIR END SCREEN ════════════════════════════════════ */
-#funfair-screen{
-  position:fixed;inset:0;z-index:300;
-  background:linear-gradient(180deg,#1a0533 0%,#3d1066 35%,#66BB6A 70%,#388E3C 100%);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  overflow:hidden;
-}
-#funfair-screen.hidden{display:none;}
-
-/* Ferris wheel */
-.fw-wrap{position:absolute;right:80px;top:40px;}
-.fw-circle{
-  width:160px;height:160px;border-radius:50%;
-  border:8px solid #FFD700;
-  animation:fw-spin 8s linear infinite;
-  position:relative;display:flex;align-items:center;justify-content:center;
-}
-@keyframes fw-spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
-.fw-spoke{
-  position:absolute;width:4px;height:76px;background:#FFD700;
-  top:50%;left:50%;transform-origin:bottom center;
-  margin-left:-2px;margin-top:-76px;
-}
-.fw-car{
-  position:absolute;width:28px;height:20px;background:#FF5722;
-  border-radius:6px;top:50%;left:50%;
-  transform-origin:center;margin-left:-14px;margin-top:-10px;
-}
-
-/* Balloons */
-.balloon{
-  position:absolute;
-  font-size:42px;
-  animation:balloon-float 3s ease-in-out infinite;
-}
-@keyframes balloon-float{
-  0%,100%{transform:translateY(0) rotate(-5deg);}
-  50%{transform:translateY(-18px) rotate(5deg);}
-}
-
-/* Bunting */
-.bunting-wrap{
-  position:absolute;top:0;left:0;right:0;
-  display:flex;justify-content:center;gap:0;
-  padding-top:8px;
-}
-.bunt-flag{
-  width:32px;height:40px;
-  clip-path:polygon(0 0,100% 0,50% 100%);
-  margin:0 2px;
-}
-
-/* Medal */
-#medal-wrap{
-  text-align:center;z-index:10;
-  animation:medal-drop .7s cubic-bezier(.34,1.56,.64,1) both;
-}
-@keyframes medal-drop{from{transform:translateY(-120px) rotate(-20deg);opacity:0}to{transform:translateY(0) rotate(0);opacity:1}}
-.medal-icon{font-size:96px;filter:drop-shadow(0 0 24px #FFD700);animation:medal-glow 2s ease-in-out infinite;}
-@keyframes medal-glow{0%,100%{filter:drop-shadow(0 0 18px #FFD700)}50%{filter:drop-shadow(0 0 40px #FFD700)}}
-.medal-title{
-  font-size:clamp(28px,5vw,52px);color:#FFD700;
-  text-shadow:2px 2px 0 #B8590A,4px 4px 16px rgba(0,0,0,.5);
-  margin:8px 0 4px;
-}
-.medal-sub{
-  font-family:'Nunito',sans-serif;font-weight:900;
-  font-size:clamp(14px,2.5vw,20px);color:#FFF9C4;
-  margin-bottom:16px;
-}
-
-/* Word Album */
-#word-album{
-  background:rgba(255,255,255,.12);border-radius:20px;
-  padding:14px 18px;margin:10px auto;
-  max-width:700px;width:92%;
-  backdrop-filter:blur(8px);
-  border:1px solid rgba(255,255,255,.2);
-  max-height:180px;overflow-y:auto;
-}
-.wa-title{
-  font-family:'Nunito',sans-serif;font-weight:900;
-  font-size:14px;color:#FFF9C4;margin-bottom:10px;text-align:center;
-}
-.wa-grid{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;}
-.wa-item{
-  font-size:34px;cursor:pointer;
-  transition:transform .15s;
-  filter:drop-shadow(0 2px 4px rgba(0,0,0,.3));
-}
-.wa-item:hover{transform:scale(1.25);}
-.wa-item:active{transform:scale(1.1);}
-
-/* Star rain */
-.star-rain{
-  position:fixed;pointer-events:none;z-index:350;
-  font-size:24px;
-  animation:star-fall 2.2s ease-in forwards;
-}
-@keyframes star-fall{
-  0%{opacity:1;transform:translateY(-20px) rotate(0deg) scale(1);}
-  80%{opacity:1;}
-  100%{opacity:0;transform:translateY(100vh) rotate(540deg) scale(.4);}
-}
-
-/* Play again btn on funfair screen */
-.btn-play-again{
-  font-family:'Fredoka One',cursive;font-size:22px;
-  background:linear-gradient(135deg,#FF8C00,#F4511E);
-  color:#fff;border:none;border-radius:50px;
-  padding:14px 44px;cursor:pointer;
-  box-shadow:0 6px 0 #BF360C;
-  transition:transform .1s,box-shadow .1s;
-  margin-top:4px;
-}
-.btn-play-again:active{transform:translateY(4px);box-shadow:0 2px 0 #BF360C;}
-
 </style>
+  <!-- PWA -->
+  <link rel="manifest" href="/manifest.json">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <meta name="theme-color" content="#1565C0">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Sound Safari">
+  <link rel="apple-touch-icon" href="/icons/icon-152x152.png">
+  <meta name="description" content="Interactive toddler speech therapy game">
 </head>
 <body>
 
@@ -349,24 +170,13 @@ canvas#gc{width:100%;height:auto;display:block;border-radius:14px;box-shadow:0 8
 <!-- GAME -->
 <div id="game-wrap" class="hidden">
   <div id="hud">
+    <span class="hud-pill">⭐ <b id="sc">0</b></span>
     <span class="hud-pill" id="cat-badge">🐾 Animals</span>
     <span class="hud-pill">🚦 <b id="sn">1</b>/100</span>
     <button class="hud-btn" id="btn-change-v" onclick="playTICK();openChangeV()">🚗 Change</button>
     <button class="hud-btn" id="btn-home" onclick="playTICK();openQuit()">🏠 Home</button>
   </div>
   <canvas id="gc" width="900" height="460"></canvas>
-
-  <!-- ══ MENTOR ZONE ══════════════════════════════════════ -->
-  <div id="mentor-zone" class="hidden">
-    <div class="mz-label">Mentor</div>
-    <div class="mz-status" id="mz-status">Driving to next signal…</div>
-    <div class="mz-btns">
-      <button id="btn-replay" class="hidden" onclick="mentorReplay()">🔊 Replay Word</button>
-      <button id="btn-welldone" class="hidden" onclick="mentorWellDone()">⭐ Well Done!</button>
-    </div>
-    <div class="mz-counter"><b id="mz-count">0</b>/100</div>
-  </div>
-
   <div id="ctrl-row">
     <button class="cb"
       onmousedown="playTICK();startMove(-1)" onmouseup="stopMove()"
@@ -375,7 +185,7 @@ canvas#gc{width:100%;height:auto;display:block;border-radius:14px;box-shadow:0 8
       onmousedown="playTICK();startMove(1)" onmouseup="stopMove()"
       ontouchstart="playTICK();startMove(1)" ontouchend="stopMove()">▶</button>
   </div>
-  <div id="hint-bar" style="display:none;">Press ▶ to drive — tap the picture to hear the word when the car stops!</div>
+  <div id="hint-bar">Press ▶ to drive — tap the big picture when the car stops at the signal!</div>
 </div>
 
 <!-- CELEBRATION -->
@@ -385,55 +195,16 @@ canvas#gc{width:100%;height:auto;display:block;border-radius:14px;box-shadow:0 8
     <div class="c-msg" id="c-msg">Amazing!</div>
     <div class="c-name" id="c-name">BALL</div>
     <div class="c-cat" id="c-cat">🍎 Fruit</div>
-    <div class="celeb-word-banner" id="c-banner"></div>
   </div>
 </div>
 
-<!-- FUNFAIR END SCREEN -->
-<div id="funfair-screen" class="hidden">
-
-  <!-- Bunting at top -->
-  <div class="bunting-wrap" id="bunting"></div>
-
-  <!-- Ferris wheel -->
-  <div class="fw-wrap">
-    <div class="fw-circle">
-      <div class="fw-spoke" style="transform:rotate(0deg) translateX(-50%)"></div>
-      <div class="fw-spoke" style="transform:rotate(45deg) translateX(-50%)"></div>
-      <div class="fw-spoke" style="transform:rotate(90deg) translateX(-50%)"></div>
-      <div class="fw-spoke" style="transform:rotate(135deg) translateX(-50%)"></div>
-      <div class="fw-spoke" style="transform:rotate(180deg) translateX(-50%)"></div>
-      <div class="fw-spoke" style="transform:rotate(225deg) translateX(-50%)"></div>
-      <div class="fw-spoke" style="transform:rotate(270deg) translateX(-50%)"></div>
-      <div class="fw-spoke" style="transform:rotate(315deg) translateX(-50%)"></div>
-    </div>
-  </div>
-
-  <!-- Balloons -->
-  <div class="balloon" style="left:5%;bottom:30%;animation-delay:0s;">🎈</div>
-  <div class="balloon" style="left:12%;bottom:25%;animation-delay:.4s;">🎈</div>
-  <div class="balloon" style="left:88%;bottom:28%;animation-delay:.7s;">🎈</div>
-  <div class="balloon" style="left:80%;bottom:22%;animation-delay:1.1s;">🎈</div>
-  <div class="balloon" style="left:50%;bottom:20%;animation-delay:.2s;">🎉</div>
-
-  <!-- Big top tent emoji -->
-  <div style="position:absolute;bottom:22%;left:10%;font-size:72px;filter:drop-shadow(0 4px 8px rgba(0,0,0,.4));">🎪</div>
-
-  <!-- Medal + announcement -->
-  <div id="medal-wrap">
-    <div class="medal-icon">🎖️</div>
-    <div class="medal-title">You made it!</div>
-    <div class="medal-sub" id="ff-sub">You learned <b id="ff-count">100</b> words today!</div>
-    <div class="medal-sub" style="color:#FFD700;font-size:clamp(16px,3vw,24px);">You are a Word Star! ⭐</div>
-  </div>
-
-  <!-- Word Album -->
-  <div id="word-album">
-    <div class="wa-title">🌟 Tap any picture to hear the word again!</div>
-    <div class="wa-grid" id="wa-grid"></div>
-  </div>
-
-  <button class="btn-play-again" onclick="restart()">🚗 Play Again!</button>
+<!-- END -->
+<div id="end-screen" class="hidden">
+  <div style="font-size:88px;">🏆</div>
+  <div style="font-size:clamp(28px,5vw,54px);color:#fff;text-shadow:3px 3px 0 rgba(0,0,0,.3);">You did it! All 100!</div>
+  <div style="font-size:54px;letter-spacing:6px;margin:12px 0;" id="e-stars">⭐⭐⭐</div>
+  <div style="font-family:'Nunito',sans-serif;font-weight:900;font-size:22px;color:#FFF9C4;margin-bottom:24px;">Score: <b id="e-sc">0</b> points</div>
+  <button class="btn-go" onclick="restart()">Play Again! 🔄</button>
 </div>
 
 <!-- QUIT MODAL -->
@@ -617,20 +388,14 @@ let wIdx = 0;
 let score = 0;
 
 // scrolling
-let worldOffset = 0;
-let driving = 0;
+let worldOffset = 0;      // increases as car drives right
+let driving = 0;          // -1 / 0 / 1
 const DRIVE_SPEED = 4;
 
 // signal state
-let sigState = 'approaching';
+let sigState = 'approaching'; // 'approaching' | 'stopped' | 'green' | 'passing'
 let cardScale = 0;
 let celebPending = false;
-
-// mentor + new state
-let wordHeard    = false;   // has word been heard at least once
-let finishState  = 'none';  // 'none' | 'driving' | 'arrived'
-let finishOffset = 0;       // world x of finish line
-let finishAnimT  = 0;       // timestamp finish driving started
 
 // world x where the CURRENT signal pole stands
 let sigWorldX = SIG_SCREEN_X; // first signal at screen x on start
@@ -651,25 +416,21 @@ let celebTimeout = null;
 function startGame(){
   document.getElementById('title-screen').classList.add('hidden');
   document.getElementById('game-wrap').classList.remove('hidden');
-  document.getElementById('mentor-zone').classList.remove('hidden');
 
   cv  = document.getElementById('gc');
   ctx = cv.getContext('2d');
 
-  gameWords    = buildWordList();
-  wIdx         = 0;
-  score        = 0;
-  worldOffset  = 0;
-  driving      = 0;
-  stripeOff    = 0;
-  sigWorldX    = SIG_SCREEN_X;
-  sigState     = 'approaching';
-  cardScale    = 0;
-  celebPending = false;
-  wordHeard    = false;
-  finishState  = 'none';
+  gameWords   = buildWordList();
+  wIdx        = 0;
+  score       = 0;
+  worldOffset = 0;
+  driving     = 0;
+  stripeOff   = 0;
+  sigWorldX   = SIG_SCREEN_X;   // first signal lines up right away
+  sigState    = 'approaching';
+  cardScale   = 0;
+  celebPending= false;
 
-  setMentorState('driving');
   updateHUD();
 
   if(animId) cancelAnimationFrame(animId);
@@ -693,21 +454,6 @@ function loop(){
 function update(){
   if(celebPending) return;
 
-  // ── FINISH DRIVE: auto-drive to funfair ──────────────
-  if(finishState === 'driving'){
-    worldOffset += DRIVE_SPEED * 1.5;
-    stripeOff   -= DRIVE_SPEED * 1.5;
-    if(stripeOff < -100) stripeOff += 100;
-    // Finish line screen x
-    const flSX = finishOffset - worldOffset;
-    if(flSX < VEH_X - 80){
-      finishState = 'arrived';
-      driving = 0;
-      showFunFair();
-    }
-    return;
-  }
-
   const canDriveForward  = (sigState !== 'stopped');
   const canDriveBackward = true;
 
@@ -723,22 +469,24 @@ function update(){
   if(stripeOff >  100) stripeOff -= 100;
   if(stripeOff < -100) stripeOff += 100;
 
+  // Where is the signal on screen right now?
   const sigScreenX = sigWorldX - worldOffset;
 
+  // Card pop-in: start showing card when signal is within 350px on screen
   if(sigState === 'approaching'){
     if(sigScreenX < VEH_X + 350){
       cardScale = Math.min(1, cardScale + 0.06);
     }
+    // Stop car when signal is close (front of car reaches signal base)
     if(sigScreenX <= VEH_X + 200){
       sigState = 'stopped';
       driving  = 0;
-      // Auto-speak word when car stops
-      setTimeout(()=>{ speakTTS(gameWords[wIdx].n); wordHeard=true; }, 400);
-      setMentorState('waiting');
     }
   }
 
+  // After green: let car pass signal, then advance to next
   if(sigState === 'green'){
+    // signal scrolls off left as car drives
     if(sigScreenX < VEH_X - 60){
       nextSignal();
     }
@@ -747,21 +495,12 @@ function update(){
 
 function nextSignal(){
   wIdx++;
-  if(wIdx >= gameWords.length){
-    // Last word done — start finish sequence
-    finishOffset = worldOffset + SIG_SCREEN_X + 600;
-    finishState  = 'driving';
-    driving      = 1; // auto-drive
-    setMentorState('finish');
-    spawnStarRain();
-    return;
-  }
-  sigWorldX    = worldOffset + SIG_SCREEN_X + 500;
-  sigState     = 'approaching';
-  cardScale    = 0;
-  wordHeard    = false;
-  setMentorState('driving');
+  if(wIdx >= gameWords.length){ endGame(); return; }
+  sigWorldX   = worldOffset + SIG_SCREEN_X + 500;
+  sigState    = 'approaching';
+  cardScale   = 0;
   updateHUD();
+  speakTTS('Great! Keep driving!');
 }
 
 // ════════════════════════════════════════════════════════
@@ -816,9 +555,6 @@ function drawScene(){
   for(let sx = dashOff - 100; sx < W + 100; sx += 100)
     ctx.fillRect(sx, ROAD_Y + ROAD_H/2 - 5, 66, 10);
 
-  // ── FINISH LINE ──────────────────────────────────────
-  drawFinishLine();
-
   // ── LOWER GRASS ──────────────────────────────────────
   const lg = ctx.createLinearGradient(0,LOWER_Y,0,H);
   lg.addColorStop(0,'#4CAF50'); lg.addColorStop(1,'#2E7D32');
@@ -855,6 +591,18 @@ function drawScene(){
   }
   ctx.restore();
 
+  // ── STOPPED HINT ─────────────────────────────────────
+  if(sigState === 'stopped' && cardScale >= 0.9){
+    // draw "TAP!" arrow below card
+    ctx.save();
+    ctx.font = 'bold 20px Fredoka One,cursive';
+    ctx.fillStyle = '#FFD700';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+    // bouncing arrow
+    const bounce = Math.sin(Date.now()/300)*6;
+    ctx.fillText('👆 TAP!', sigSX, ROAD_Y - 60 + bounce);
+    ctx.restore();
+  }
 }
 
 // ── Draw signal pole + box + lights ──────────────────
@@ -891,44 +639,35 @@ function drawSignal(sx, green){
   ctx.restore();
 }
 
-// ── Draw item card (upgraded) ────────────────────────
+// ── Draw item card above and to the right of signal ──
 function drawItemCard(sx, scale, word){
-  const cx = sx + 90;
-  const cy = ROAD_Y - 90;
+  // Position: to the RIGHT side of the signal, road-level height
+  const cx = sx + 90;   // shift right of pole
+  const cy = ROAD_Y - 80; // above grass line
 
   ctx.save();
   ctx.translate(cx, cy);
   ctx.scale(scale, scale);
 
-  // Card shadow + white background
-  ctx.shadowColor='rgba(0,0,0,.35)'; ctx.shadowBlur=20;
-  ctx.fillStyle='#fff';
-  roundRect(ctx, -78, -95, 156, 145, 22);
+  // white rounded card with gold border
+  ctx.shadowColor='rgba(0,0,0,.3)'; ctx.shadowBlur=16;
+  ctx.fillStyle='white';
+  roundRect(ctx, -65, -72, 130, 110, 18);
   ctx.fill();
   ctx.shadowBlur=0;
-
-  // Gold border (pulses when stopped)
-  const pulse = sigState==='stopped' ? 0.6+0.4*Math.sin(Date.now()/300) : 1;
-  ctx.strokeStyle=`rgba(255,${Math.floor(180+75*pulse)},0,1)`;
-  ctx.lineWidth=5;
-  roundRect(ctx, -78, -95, 156, 145, 22);
+  ctx.strokeStyle='#FFD700'; ctx.lineWidth=5;
+  roundRect(ctx, -65, -72, 130, 110, 18);
   ctx.stroke();
 
-  // Big emoji — centre focus
-  ctx.font='86px serif';
+  // big emoji
+  ctx.font='72px serif';
   ctx.textAlign='center'; ctx.textBaseline='middle';
-  ctx.fillText(word.e, 0, -22);
-
-  // Hear Again hint (small speaker icon at bottom of card)
-  if(sigState==='stopped'){
-    ctx.font='bold 13px Nunito,sans-serif';
-    ctx.fillStyle='rgba(100,120,200,.8)';
-    ctx.textAlign='center'; ctx.textBaseline='middle';
-    ctx.fillText('🔊 Tap to hear', 0, 36);
-  }
+  ctx.fillText(word.e, 0, -16);
 
   ctx.restore();
 
+  // Store actual screen position for hit detection
+  // (these are in canvas pixel units, NOT scaled by CSS)
   window._cardHitX = cx;
   window._cardHitY = cy;
 }
@@ -937,11 +676,11 @@ function drawItemCard(sx, scale, word){
 //  TAP HANDLER
 // ════════════════════════════════════════════════════════
 function onTap(e){
-  // Child tapping the card = hear the word again
   if(sigState !== 'stopped' || celebPending) return;
-  if(cardScale < 0.6) return;
+  if(cardScale < 0.6) return;  // card not visible enough
 
   const rect = cv.getBoundingClientRect();
+  // Convert screen tap → canvas units
   const scaleX = W / rect.width;
   const scaleY = H / rect.height;
   const tx = (e.clientX - rect.left) * scaleX;
@@ -949,42 +688,28 @@ function onTap(e){
 
   const hitX = window._cardHitX || 0;
   const hitY = window._cardHitY || 0;
-  const dist = Math.sqrt((tx-hitX)**2 + (ty-hitY)**2);
 
-  if(dist < 90){
-    // Child tapped the card — play the word again
-    playCHIME();
-    setTimeout(()=>{ speakTTS(gameWords[wIdx].n); wordHeard=true; }, 200);
-    // Bounce the card visually
-    cardScale = 0.85;
+  const dx = tx - hitX;
+  const dy = ty - hitY;
+  const dist = Math.sqrt(dx*dx + dy*dy);
+
+  if(dist < 80){
+    doTap();
   }
 }
 
-// ── MENTOR ACTIONS ───────────────────────────────────────
-function mentorReplay(){
-  if(!gameWords[wIdx]) return;
-  playTICK();
-  speakTTS(gameWords[wIdx].n);
-  wordHeard = true;
-  // Pulse card scale
-  cardScale = 0.88;
-}
-
-function mentorWellDone(){
-  if(celebPending || sigState !== 'stopped') return;
+function doTap(){
+  if(celebPending) return;
   celebPending = true;
 
   const w = gameWords[wIdx];
   sigState = 'green';
-  score   += 10;
+  score += 10;
   updateHUD();
 
-  // Celebration rises from bottom — confetti burst first
-  spawnConfetti();
-  playFANFARE();
-  // Personalised speech: "Amazing! You said TIGER!"
-  setTimeout(()=> speakTTS('Amazing! You said ' + w.n + '!'), 500);
-
+  playCHIME();
+  // Speak word AFTER chime finishes (~450ms), then again in celebration
+  setTimeout(()=> speakTTS(w.n), 460);
   celebrate(w);
 }
 
@@ -993,33 +718,31 @@ function mentorWellDone(){
 // ════════════════════════════════════════════════════════
 function celebrate(w){
   const msg = CHEERS[Math.floor(Math.random()*CHEERS.length)];
-  document.getElementById('c-em').textContent    = w.e;
-  document.getElementById('c-msg').textContent   = msg;
-  document.getElementById('c-name').textContent  = w.n;
-  document.getElementById('c-cat').textContent   = CAT_ICONS[w.cat]+' '+w.cat;
-  document.getElementById('c-banner').textContent= 'You said ' + w.n + '! 🌟';
+  document.getElementById('c-em').textContent  = w.e;
+  document.getElementById('c-msg').textContent = msg;
+  document.getElementById('c-name').textContent= w.n;
+  document.getElementById('c-cat').textContent = CAT_ICONS[w.cat]+' '+w.cat;
   document.getElementById('celeb').classList.remove('hidden');
+  spawnConfetti();
 
-  // Repeat word again mid-celebration
-  setTimeout(()=> speakTTS(w.n), 1200);
-
-  setMentorState('celebrating');
+  playFANFARE();
+  // Repeat word clearly after fanfare so child can hear and say it
+  setTimeout(()=> speakTTS(w.n), 1100);
 
   if(celebTimeout) clearTimeout(celebTimeout);
   celebTimeout = setTimeout(()=>{
     document.getElementById('celeb').classList.add('hidden');
     clearConfetti();
     celebPending = false;
-    setMentorState('driving');
-  }, 3000);
+  }, 2800);
 }
 
 // ════════════════════════════════════════════════════════
 //  HUD + END
 // ════════════════════════════════════════════════════════
 function updateHUD(){
+  document.getElementById('sc').textContent = score;
   document.getElementById('sn').textContent = Math.min(wIdx+1,100);
-  document.getElementById('mz-count').textContent = Math.min(wIdx+1,100);
   if(wIdx < gameWords.length){
     const cat = gameWords[wIdx].cat;
     document.getElementById('cat-badge').textContent = CAT_ICONS[cat]+' '+cat;
@@ -1027,60 +750,26 @@ function updateHUD(){
 }
 
 function endGame(){
-  // endGame is no longer called directly — finish sequence handles it
-}
-
-function showFunFair(){
   cancelAnimationFrame(animId);
   saveLastRun();
-  stopEngine();
-
   document.getElementById('game-wrap').classList.add('hidden');
-  document.getElementById('mentor-zone').classList.add('hidden');
-  document.getElementById('funfair-screen').classList.remove('hidden');
-
-  // Populate word album
-  const grid = document.getElementById('wa-grid');
-  grid.innerHTML = '';
-  gameWords.forEach(w=>{
-    const span = document.createElement('span');
-    span.className='wa-item';
-    span.textContent=w.e;
-    span.title=w.n;
-    span.onclick=()=>{ playTICK(); speakTTS(w.n); };
-    grid.appendChild(span);
-  });
-
-  document.getElementById('ff-count').textContent = gameWords.length;
-
-  // Build bunting
-  const buntColors=['#FF4444','#FFD700','#44DD44','#4488FF','#FF44CC','#00CCFF','#FF8C00'];
-  const bunting = document.getElementById('bunting');
-  bunting.innerHTML='';
-  for(let i=0;i<30;i++){
-    const f=document.createElement('div');
-    f.className='bunt-flag';
-    f.style.background=buntColors[i%buntColors.length];
-    bunting.appendChild(f);
-  }
-
-  spawnStarRain();
-  speakTTS('You made it to the Fun Fair! You are a Word Star!');
+  document.getElementById('end-screen').classList.remove('hidden');
+  document.getElementById('e-sc').textContent   = score;
+  document.getElementById('e-stars').textContent= score>=800?'⭐⭐⭐':score>=500?'⭐⭐':'⭐';
+  speakTTS('You finished all one hundred signals! You are amazing!');
 }
 
 function goHome(){
   cancelAnimationFrame(animId);
   saveLastRun();
-  stopEngine();
   closeQuit();
   document.getElementById('game-wrap').classList.add('hidden');
-  document.getElementById('mentor-zone').classList.add('hidden');
   document.getElementById('title-screen').classList.remove('hidden');
   showLastRun();
 }
 
 function restart(){
-  document.getElementById('funfair-screen').classList.add('hidden');
+  document.getElementById('end-screen').classList.add('hidden');
   document.getElementById('title-screen').classList.remove('hidden');
   showLastRun();
 }
@@ -1158,130 +847,6 @@ function selV(v,el){
   document.querySelectorAll('.v-card').forEach(c=>c.classList.remove('sel'));
   el.classList.add('sel');
 }
-// ════════════════════════════════════════════════════════
-//  MENTOR ZONE STATE MACHINE
-// ════════════════════════════════════════════════════════
-function setMentorState(state){
-  const status   = document.getElementById('mz-status');
-  const btnReplay= document.getElementById('btn-replay');
-  const btnWD    = document.getElementById('btn-welldone');
-
-  // Hide all buttons first
-  btnReplay.classList.add('hidden');
-  btnWD.classList.add('hidden');
-
-  if(state === 'driving'){
-    status.textContent = 'Driving to next signal…';
-  }
-  else if(state === 'waiting'){
-    status.textContent = 'Child is listening — tap Well Done when they say it correctly!';
-    btnReplay.classList.remove('hidden');
-    btnWD.classList.remove('hidden');
-  }
-  else if(state === 'celebrating'){
-    status.textContent = '🎉 Wonderful!';
-  }
-  else if(state === 'finish'){
-    status.textContent = '🎪 All done — heading to the Fun Fair!';
-  }
-}
-
-// ════════════════════════════════════════════════════════
-//  FINISH LINE DRAWING
-// ════════════════════════════════════════════════════════
-function drawFinishLine(){
-  if(finishState === 'none') return;
-  const flSX = finishOffset - worldOffset; // screen x of finish line
-  if(flSX < -200 || flSX > W + 200) return;
-
-  // Chequered finish banner posts
-  const postH = 120;
-  const postTop = ROAD_Y - postH;
-
-  // Left post
-  ctx.fillStyle = '#fff';
-  ctx.fillRect(flSX - 2, postTop, 8, postH);
-  // Right post (across road)
-  ctx.fillRect(flSX - 2, ROAD_Y + ROAD_H - postH, 8, postH);
-
-  // Chequered banner across road
-  const bannerY = postTop;
-  const bannerH = 22;
-  const sqSize  = 22;
-  const cols    = Math.ceil(ROAD_H / sqSize) + 2;
-  for(let r = 0; r < 2; r++){
-    for(let c = 0; c < cols; c++){
-      ctx.fillStyle = (r + c) % 2 === 0 ? '#fff' : '#000';
-      ctx.fillRect(flSX, bannerY + (r * sqSize), sqSize, sqSize);
-    }
-  }
-  // Chequered banner bottom (across road)
-  const bannerY2 = ROAD_Y + ROAD_H - bannerH;
-  for(let r = 0; r < 2; r++){
-    for(let c = 0; c < cols; c++){
-      ctx.fillStyle = (r + c) % 2 === 0 ? '#fff' : '#000';
-      ctx.fillRect(flSX, bannerY2 + (r * sqSize), sqSize, sqSize);
-    }
-  }
-
-  // "YOU DID IT!" text banner
-  const bannerMidY = ROAD_Y - 50;
-  ctx.save();
-  ctx.fillStyle='rgba(255,215,0,.95)';
-  roundRect(ctx, flSX - 80, bannerMidY - 28, 170, 48, 12);
-  ctx.fill();
-  ctx.font='bold 20px Fredoka One,cursive';
-  ctx.fillStyle='#B8590A';
-  ctx.textAlign='center'; ctx.textBaseline='middle';
-  ctx.fillText('🎪 You Did It!', flSX + 5, bannerMidY - 4);
-  ctx.restore();
-
-  // Colourful bunting strung across top of road
-  const buntColors=['#FF4444','#FFD700','#44DD44','#4488FF','#FF44CC'];
-  ctx.save();
-  ctx.strokeStyle='rgba(255,255,255,.6)'; ctx.lineWidth=2;
-  ctx.beginPath(); ctx.moveTo(flSX-60, postTop+10); ctx.lineTo(flSX+100, postTop+10); ctx.stroke();
-  for(let i=0;i<8;i++){
-    const bx = flSX - 50 + i*20;
-    ctx.fillStyle = buntColors[i%buntColors.length];
-    ctx.beginPath();
-    ctx.moveTo(bx, postTop+8);
-    ctx.lineTo(bx+8, postTop+8);
-    ctx.lineTo(bx+4, postTop+22);
-    ctx.closePath(); ctx.fill();
-  }
-  ctx.restore();
-
-  // Fun Fair silhouette on horizon (simple drawn icons)
-  if(flSX > 100 && flSX < W + 200){
-    ctx.font='48px serif'; ctx.textAlign='center'; ctx.textBaseline='bottom';
-    ctx.globalAlpha = Math.max(0, Math.min(1, (W - flSX) / 300));
-    ctx.fillText('🎪', flSX + 140, ROAD_Y - 10);
-    ctx.fillText('🎡', flSX + 220, ROAD_Y - 5);
-    ctx.fillText('🎈', flSX + 180, ROAD_Y - 50);
-    ctx.globalAlpha = 1;
-  }
-}
-
-// ════════════════════════════════════════════════════════
-//  STAR RAIN (end of game)
-// ════════════════════════════════════════════════════════
-function spawnStarRain(){
-  for(let i=0;i<30;i++){
-    setTimeout(()=>{
-      const s=document.createElement('div');
-      s.className='star-rain';
-      s.textContent='⭐';
-      s.style.cssText=`left:${Math.random()*100}vw;top:-30px;animation-delay:0s;animation-duration:${1.5+Math.random()*1.5}s;font-size:${18+Math.random()*20}px;`;
-      document.body.appendChild(s);
-      setTimeout(()=>s.remove(), 3500);
-    }, i * 120);
-  }
-}
-
-// ════════════════════════════════════════════════════════
-//  DRAW ITEM CARD (upgraded — larger emoji, mentor word label)
-// ════════════════════════════════════════════════════════
 // ════════════════════════════════════════════════════════
 //  MOVEMENT  — ▶ = forward,  ◀ = back
 // ════════════════════════════════════════════════════════
@@ -1549,6 +1114,16 @@ window.onload=()=>{
   document.addEventListener('touchstart', unlock, {once:true});
   document.addEventListener('mousedown',  unlock, {once:true});
 };
+</script>
+<script>
+// Register Service Worker for PWA / offline support
+if('serviceWorker' in navigator){
+  window.addEventListener('load', ()=>{
+    navigator.serviceWorker.register('/service-worker.js')
+      .then(r=> console.log('[SW] Registered:', r.scope))
+      .catch(e=> console.warn('[SW] Registration failed:', e));
+  });
+}
 </script>
 </body>
 </html>
