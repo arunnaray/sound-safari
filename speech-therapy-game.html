@@ -163,7 +163,7 @@ canvas#gc{width:100%;height:auto;display:block;border-radius:14px;box-shadow:0 8
 #btn-replay:active{transform:translateY(2px);}
 #btn-replay.hidden{display:none!important;}
 
-/* Well Done button */
+/* Clap for them button */
 #btn-welldonе{display:none;}
 #btn-welldone{
   font-family:'Fredoka One',cursive;font-size:18px;
@@ -323,7 +323,7 @@ canvas#gc{width:100%;height:auto;display:block;border-radius:14px;box-shadow:0 8
 <!-- TITLE -->
 <div id="title-screen">
   <div class="t-title">🚦 Sound Safari!</div>
-  <div class="t-sub">Drive to each signal and tap the picture! 🎉</div>
+  <div class="t-sub">Drive to the signal — hear the word — say it! 🎉</div>
 
   <!-- Last run scorecard (hidden until there's a run) -->
   <div id="last-run" class="hidden">
@@ -362,7 +362,7 @@ canvas#gc{width:100%;height:auto;display:block;border-radius:14px;box-shadow:0 8
     <div class="mz-status" id="mz-status">Driving to next signal…</div>
     <div class="mz-btns">
       <button id="btn-replay" class="hidden" onclick="mentorReplay()">🔊 Replay Word</button>
-      <button id="btn-welldone" class="hidden" onclick="mentorWellDone()">⭐ Well Done!</button>
+      <button id="btn-welldone" class="hidden" onclick="mentorWellDone()">👏 Clap for them!</button>
     </div>
     <div class="mz-counter"><b id="mz-count">0</b>/100</div>
   </div>
@@ -470,46 +470,46 @@ canvas#gc{width:100%;height:auto;display:block;border-radius:14px;box-shadow:0 8
 <script>
 // ════════════════════════════════════════════════════════
 //  WORD DATA — 100 items, all starting with T sound
-//  Categories: Animals(20), Birds(20), Objects(20), Fruits(20), Vegetables(20)
+//  Categories: Animals(20), Birds(20), Food(20), Objects(20), Nature(20)
 // ════════════════════════════════════════════════════════
 const CATEGORIES = {
   Animals:[
-    {e:'🐯',n:'TIGER'},{e:'🐢',n:'TURTLE'},{e:'🦌',n:'TAPIR'},{e:'🐠',n:'TUNA'},
-    {e:'🦖',n:'T-REX'},{e:'🐦',n:'TEAL'},{e:'🐆',n:'TABBY'},{e:'🦬',n:'TAKIN'},
-    {e:'🦎',n:'TOKAY'},{e:'🦑',n:'TENTACLE'},{e:'🦃',n:'TURKEY'},{e:'🦤',n:'TOUCAN'},
-    {e:'🐊',n:'TOAD'},{e:'🦓',n:'TAPIR'},{e:'🐋',n:'TUNA FISH'},{e:'🦂',n:'TARANTULA'},
-    {e:'🐝',n:'TAWNY BEE'},{e:'🦡',n:'TERRIER'},{e:'🐭',n:'TINY MOUSE'},{e:'🦘',n:'TAMMAR'},
+    {e:'🐯',n:'TIGER'},{e:'🐘',n:'TUSKER'},{e:'🐢',n:'TORTOISE'},{e:'🐊',n:'TOAD'},
+    {e:'🦂',n:'TARANTULA'},{e:'🦎',n:'TOKAY'},{e:'🐟',n:'TILAPIA'},{e:'🦗',n:'TERMITE'},
+    {e:'🐅',n:'TABBY CAT'},{e:'🐬',n:'TUNA'},{e:'🦁',n:'TAWNY LION'},{e:'🐆',n:'TIGER CUB'},
+    {e:'🦋',n:'TIGER MOTH'},{e:'🐠',n:'TROPICAL FISH'},{e:'🦀',n:'TINY CRAB'},{e:'🐙',n:'TENTACLE'},
+    {e:'🦟',n:'TERMITE FLY'},{e:'🐍',n:'TREE SNAKE'},{e:'🦔',n:'TINY HEDGEHOG'},{e:'🐾',n:'TRACK'},
   ],
   Birds:[
-    {e:'🦃',n:'TURKEY'},{e:'🦤',n:'TOUCAN'},{e:'🕊️',n:'TURTLEDOVE'},{e:'🦢',n:'TEAL'},
-    {e:'🦅',n:'TALON BIRD'},{e:'🐦',n:'THRUSH'},{e:'🦉',n:'TAWNY OWL'},{e:'🐧',n:'TERN'},
-    {e:'🦜',n:'TANAGER'},{e:'🦚',n:'TOPKNOT'},{e:'🦆',n:'TUFTED DUCK'},{e:'🐓',n:'TOM ROOSTER'},
-    {e:'🦩',n:'TROPICBIRD'},{e:'🦢',n:'TRUMPETER'},{e:'🐤',n:'TINY BIRD'},{e:'🦉',n:'TAIGA OWL'},
-    {e:'🦅',n:'TERCEL'},{e:'🐦',n:'TAILORBIRD'},{e:'🦜',n:'TOCO'},{e:'🕊️',n:'TEAL DOVE'},
+    {e:'🦚',n:'TAIL BIRD'},{e:'🦜',n:'TAILORBIRD'},{e:'🦅',n:'TAWNY EAGLE'},{e:'🦆',n:'TEAL'},
+    {e:'🦃',n:'TURKEY'},{e:'🦤',n:'TOUCAN'},{e:'🕊️',n:'TURTLE DOVE'},{e:'🐦',n:'TREE PIE'},
+    {e:'🦩',n:'TALL CRANE'},{e:'🦉',n:'TAWNY OWL'},{e:'🐧',n:'TUX BIRD'},{e:'🦢',n:'TRUMPETER'},
+    {e:'🐓',n:'TOM ROOSTER'},{e:'🦜',n:'TALKING BIRD'},{e:'🐤',n:'TINY CHICK'},{e:'🦚',n:'TAILOR BIRD'},
+    {e:'🐦',n:'THRUSH'},{e:'🦩',n:'TROPICBIRD'},{e:'🦆',n:'TUFTED DUCK'},{e:'🦅',n:'TERN'},
+  ],
+  Food:[
+    {e:'🍅',n:'TOMATO'},{e:'🥥',n:'TENDER COCONUT'},{e:'🥭',n:'TROPICAL MANGO'},{e:'🍌',n:'TROPICAL BANANA'},
+    {e:'🍋',n:'TANGY LIME'},{e:'🍠',n:'TARO'},{e:'🧅',n:'TURNIP'},{e:'🍞',n:'TOAST'},
+    {e:'🫖',n:'TEA'},{e:'🍱',n:'TIFFIN'},{e:'🌽',n:'TENDER CORN'},{e:'🥜',n:'TIL SEEDS'},
+    {e:'🫘',n:'TOOR DAL'},{e:'🌿',n:'TULSI'},{e:'🥔',n:'TAPIOCA'},{e:'🍢',n:'TANDOORI'},
+    {e:'🥗',n:'THALI'},{e:'🫙',n:'TURMERIC'},{e:'🍊',n:'TANGERINE'},{e:'🫚',n:'TAMARIND'},
   ],
   Objects:[
-    {e:'🚂',n:'TRAIN'},{e:'🎪',n:'TENT'},{e:'🧸',n:'TEDDY'},{e:'🎺',n:'TRUMPET'},
-    {e:'🏆',n:'TROPHY'},{e:'🎠',n:'TURNTABLE'},{e:'🪁',n:'TOY BOW'},{e:'🧩',n:'TILE'},
-    {e:'🔦',n:'TORCH'},{e:'🪣',n:'TUB'},{e:'🧲',n:'TOOL'},{e:'📻',n:'TRANSISTOR'},
-    {e:'🪤',n:'TRAP'},{e:'⛺',n:'TEPEE'},{e:'🎡',n:'TOP'},{e:'🚜',n:'TRACTOR'},
-    {e:'🎯',n:'TARGET'},{e:'🧵',n:'THREAD'},{e:'🪆',n:'TOY DOLL'},{e:'🎻',n:'TUNE BOX'},
+    {e:'🚂',n:'TRAIN'},{e:'🥁',n:'TABLA'},{e:'🛕',n:'TEMPLE'},{e:'🔦',n:'TORCH'},
+    {e:'🪣',n:'TUB'},{e:'🎺',n:'TRUMPET'},{e:'⛺',n:'TENT'},{e:'🚜',n:'TRACTOR'},
+    {e:'🧸',n:'TEDDY'},{e:'🎯',n:'TARGET'},{e:'🧵',n:'THREAD'},{e:'🏆',n:'TROPHY'},
+    {e:'🛺',n:'TONGA'},{e:'🪔',n:'TAPER'},{e:'🎪',n:'TAMASHA'},{e:'🪘',n:'TOM TOM'},
+    {e:'🧲',n:'TOOL'},{e:'🪆',n:'TOY'},{e:'🎠',n:'TUMBLER'},{e:'🚛',n:'TRUCK'},
   ],
-  Fruits:[
-    {e:'🍅',n:'TOMATO'},{e:'🍊',n:'TANGERINE'},{e:'🍑',n:'TAMARIND'},{e:'🥝',n:'TAMARILLO'},
-    {e:'🫐',n:'THORN BERRY'},{e:'🍈',n:'TANGELO'},{e:'🍇',n:'TREACLE GRAPE'},{e:'🍒',n:'TART CHERRY'},
-    {e:'🍓',n:'TROPICAL BERRY'},{e:'🥭',n:'THAI MANGO'},{e:'🍍',n:'TROPICAL PINE'},{e:'🍌',n:'THAI BANANA'},
-    {e:'🫒',n:'TABLE OLIVE'},{e:'🍋',n:'TANGY LEMON'},{e:'🍎',n:'TOFFEE APPLE'},{e:'🍐',n:'TAWNY PEAR'},
-    {e:'🍏',n:'TART APPLE'},{e:'🍇',n:'TABLE GRAPE'},{e:'🍊',n:'TROPICAL ORANGE'},{e:'🥝',n:'TEAM KIWI'},
-  ],
-  Vegetables:[
-    {e:'🍅',n:'TOMATO'},{e:'🌽',n:'TASSLE CORN'},{e:'🥦',n:'TENDER BROC'},{e:'🧅',n:'TURNIP'},
-    {e:'🥔',n:'TATER'},{e:'🫛',n:'TENDERPEA'},{e:'🥒',n:'TELEGRAPH'},{e:'🍆',n:'THIN BRINJAL'},
-    {e:'🌿',n:'TARRAGON'},{e:'🧄',n:'TOP GARLIC'},{e:'🥬',n:'TATSOI'},{e:'🫑',n:'THIN PEPPER'},
-    {e:'🥕',n:'TOP CARROT'},{e:'🌾',n:'TEFF'},{e:'🥗',n:'TOSSED SALAD'},{e:'🫚',n:'TUNG OIL'},
-    {e:'🍄',n:'TRUFFLE'},{e:'🌰',n:'TREE NUT'},{e:'🥦',n:'TENDER STEM'},{e:'🧅',n:'TOPPED TURNIP'},
+  Nature:[
+    {e:'🌳',n:'TREE'},{e:'⛈️',n:'THUNDER'},{e:'🌊',n:'TIDE'},{e:'🌷',n:'TULIP'},
+    {e:'🌵',n:'THORN'},{e:'🍂',n:'TWIG'},{e:'🌾',n:'TUFT'},{e:'🌅',n:'TWILIGHT'},
+    {e:'🌿',n:'TENDRIL'},{e:'🌻',n:'THISTLE'},{e:'💧',n:'TRICKLE'},{e:'🌈',n:'TROPICAL SKY'},
+    {e:'🌙',n:'TWILIGHT MOON'},{e:'🍃',n:'TAMARIND TREE'},{e:'🌴',n:'TALL PALM'},{e:'🌫️',n:'THICK MIST'},
+    {e:'🪸',n:'TIDE POOL'},{e:'🏔️',n:'TOP PEAK'},{e:'☀️',n:'TROPICAL SUN'},{e:'🌱',n:'TINY SHOOT'},
   ],
 };
-const CAT_ICONS={Animals:'🐾',Birds:'🐦',Objects:'🎯',Fruits:'🍎',Vegetables:'🥦'};
+const CAT_ICONS={Animals:'🐾',Birds:'🦚',Food:'🍱',Objects:'🛕',Nature:'🌳'};
 const CHEERS=['Amazing! 🌟','Super! 🎊','Brilliant! 🏅','Wow! 🥳','Perfect! 🎯','Great job! 👏','Yay! 🎉','Fantastic! 🦄','Terrific! 🌈','Top job! ⭐'];
 const VMAP={car:'🚗', tram:'🚋', truck:'🚛'};
 const CF_COLS=['#FF4444','#FFD700','#44DD44','#4488FF','#FF8C00','#FF44CC','#00CCFF'];
@@ -891,40 +891,55 @@ function drawSignal(sx, green){
   ctx.restore();
 }
 
-// ── Draw item card (upgraded) ────────────────────────
+// ── Draw item card (upgraded — shows word + emoji) ───
 function drawItemCard(sx, scale, word){
   const cx = sx + 90;
-  const cy = ROAD_Y - 90;
+  const cy = ROAD_Y - 100;
 
   ctx.save();
   ctx.translate(cx, cy);
   ctx.scale(scale, scale);
 
-  // Card shadow + white background
+  // Card shadow + white background — taller to fit word label
   ctx.shadowColor='rgba(0,0,0,.35)'; ctx.shadowBlur=20;
   ctx.fillStyle='#fff';
-  roundRect(ctx, -78, -95, 156, 145, 22);
+  roundRect(ctx, -82, -105, 164, 175, 22);
   ctx.fill();
   ctx.shadowBlur=0;
 
-  // Gold border (pulses when stopped)
+  // Gold border — pulses when stopped
   const pulse = sigState==='stopped' ? 0.6+0.4*Math.sin(Date.now()/300) : 1;
   ctx.strokeStyle=`rgba(255,${Math.floor(180+75*pulse)},0,1)`;
   ctx.lineWidth=5;
-  roundRect(ctx, -78, -95, 156, 145, 22);
+  roundRect(ctx, -82, -105, 164, 175, 22);
   ctx.stroke();
 
-  // Big emoji — centre focus
-  ctx.font='86px serif';
+  // Big emoji — large, centre focus for child
+  ctx.font='80px serif';
   ctx.textAlign='center'; ctx.textBaseline='middle';
-  ctx.fillText(word.e, 0, -22);
+  ctx.fillText(word.e, 0, -30);
 
-  // Hear Again hint (small speaker icon at bottom of card)
+  // ── Word label — always visible once card appears ──
+  // Coloured band at bottom of card
+  ctx.fillStyle='#1565C0';
+  roundRect(ctx, -82, 38, 164, 32, 0);
+  // only bottom corners rounded
+  ctx.fillRect(-82, 38, 164, 16);
+  ctx.fill();
+  roundRect(ctx, -82, 38, 164, 32, 10);
+  ctx.fill();
+
+  ctx.font='bold 18px Fredoka One,cursive';
+  ctx.fillStyle='#fff';
+  ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.fillText(word.n, 0, 54);
+
+  // Tap hint when stopped
   if(sigState==='stopped'){
-    ctx.font='bold 13px Nunito,sans-serif';
-    ctx.fillStyle='rgba(100,120,200,.8)';
+    ctx.font='12px Nunito,sans-serif';
+    ctx.fillStyle='rgba(100,120,200,.75)';
     ctx.textAlign='center'; ctx.textBaseline='middle';
-    ctx.fillText('🔊 Tap to hear', 0, 36);
+    ctx.fillText('🔊 tap to hear again', 0, 84);
   }
 
   ctx.restore();
@@ -1174,7 +1189,7 @@ function setMentorState(state){
     status.textContent = 'Driving to next signal…';
   }
   else if(state === 'waiting'){
-    status.textContent = 'Child is listening — tap Well Done when they say it correctly!';
+    status.textContent = 'Listen carefully — tap 👏 Clap for them! when the child says it right!';
     btnReplay.classList.remove('hidden');
     btnWD.classList.remove('hidden');
   }
