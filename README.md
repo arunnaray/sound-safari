@@ -55,7 +55,7 @@ git push -u origin main
 
 ### Step 4 — Your live URL
 ```
-https://YOUR_USERNAME.github.io/sound-safari/
+https://arunnaray.github.io/sound-safari/
 ```
 Check the **Actions** tab for deployment status (~1 minute).
 
