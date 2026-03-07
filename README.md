@@ -1,6 +1,7 @@
 # 🚦 Sound Safari — PWA + GitHub Pages
 
 Interactive toddler speech therapy game. Installable on any device. Works fully offline.
+[Play Game !](https://arunnaray.github.io/sound-safari/)
 
 ---
 
