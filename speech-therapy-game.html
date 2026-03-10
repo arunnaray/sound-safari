@@ -472,26 +472,28 @@ canvas#gc{width:100%;height:auto;display:block;border-radius:14px;box-shadow:0 8
 //  WORD DATA — 100 items, all starting with T sound
 //  Categories: Animals(20), Birds(20), Food(20), Objects(20), Nature(20)
 // ════════════════════════════════════════════════════════
+
 const CATEGORIES = {
-  Animals:[
-    {e:'🐯',n:'TIGER'},{e:'🐢',n:'TORTOISE'},
+  Food: [{e:'🌮',n:'TACO'},{e:'🍅',n:'TOMATO'}],
+  Vehicles: [{e:'🚕',n:'TAXI'},{e:'🛒',n:'TROLLEY'},{e:'🚜',n:'TRACTOR'},{e:'🚂',n:'TRAIN'},{e:'🚛',n:'TRUCK'}],
+  Electronics: [{e:'☎️',n:'TELEPHONE'},{e:'📺',n:'TELEVISION'}],
+  Tools: [{e:'🌡️',n:'THERMOMETER'},{e:'🔭',n:'TELESCOPE'},{e:'🛠️',n:'TOOLS'}],
+  Games: [{e:'🎾',n:'TENNIS'}],
+  Clothes: [{e:'👕',n:'T-SHIRT'}],
+  Body: [{e:'👅',n:'TONGUE'},{e:'🦷',n:'TOOTH'}],
+  Animals: [{e:'🐯',n:'TIGER'},{e:'🐢',n:'TORTOISE'}],
+  Birds: [{e:'🦃',n:'TURKEY'}],
+  Objects: [
+    {e:'🛕',n:'TEMPLE'},{e:'🔦',n:'TORCH'},{e:'🫖',n:'TEA CUP'},{e:'🪣',n:'TUB'},
+    {e:'⛺',n:'TENT'},{e:'🪥',n:'TOOTHBRUSH'},{e:'🧸',n:'TEDDY'},{e:'🧵',n:'THREAD'},
+    {e:'🏆',n:'TROPHY'},{e:'🪆',n:'TOY'},{e:'🎟️',n:'TICKET'},{e:'💰',n:'TREASURE'}
   ],
-  Birds:[
-    {e:'🦃',n:'TURKEY'},
-  ],
-  Food:[
-    {e:'🍅',n:'TOMATO'},{e:'🫖',n:'TEA CUP'},
-  ],
-  Objects:[
-    {e:'🚂',n:'TRAIN'},{e:'🛕',n:'TEMPLE'},{e:'🔦',n:'TORCH'},
-    {e:'🪣',n:'TUB'},{e:'⛺',n:'TENT'},{e:'🚜',n:'TRACTOR'},
-    {e:'🧸',n:'TEDDY'},{e:'🧵',n:'THREAD'},{e:'🏆',n:'TROPHY'},{e:'🪆',n:'TOY'},{e:'🚛',n:'TRUCK'},
-  ],
-  Nature:[
-    {e:'🌳',n:'TREE'},{e:'⛈️',n:'THUNDER'},{e:'🌊',n:'TIDE'},{e:'🌷',n:'TULIP'},{e:'🌱',n:'TINY SHOOT'},{e:'✨',n:'TWINKEL'},
-  ],
-};
-const CAT_ICONS={Animals:'🐾',Birds:'🦚',Food:'🍱',Objects:'🛕',Nature:'🌳'};
+  Nature: [{e:'🌳',n:'TREE'},{e:'⛈️',n:'THUNDER'},{e:'🌊',n:'TIDE'},{e:'🌷',n:'TULIP'},{e:'🌱',n:'TINY SHOOT'},{e:'✨',n:'TWINKEL'},{e:'🌊',n:'TSUNAMI'}],
+    };
+const CAT_ICONS = {
+  Animals:'🐾', Birds:'🦚', Food:'🍱', Objects:'🛕', Nature:'🌳',
+  Body:'🧍', Clothes:'👕', Games:'🎮', Tools:'🛠️',
+  Electronics:'📱', Vehicles:'🚗'};
 const CHEERS=['Amazing! 🌟','Super! 🎊','Brilliant! 🏅','Wow! 🥳','Perfect! 🎯','Great job! 👏','Yay! 🎉','Fantastic! 🦄','Terrific! 🌈','Top job! ⭐'];
 const VMAP={car:'🚗', tram:'🚋', truck:'🚛'};
 const CF_COLS=['#FF4444','#FFD700','#44DD44','#4488FF','#FF8C00','#FF44CC','#00CCFF'];
